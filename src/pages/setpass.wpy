@@ -1,0 +1,156 @@
+<style type="less" src="../styles/setpass.less"></style>
+
+<template>
+    <view class="page">
+        <view class="page-before" style="background-color:{{btncolor}}"></view>
+        <view class="page-view">
+
+
+            <view class="cue-title" style="color:{{btncolor}}" >密码限定6—18位字母、数字。
+            </view>
+            <input class="new-pass" placeholder="新密码" bindinput="setnewpass" maxlength="18"></input>
+            <input class="surenew-pass" placeholder="确认新密码" bindinput="surenewpass" maxlength="18"></input>
+
+            <view class="pass-warning">{{warning}}</view>
+            <button @tap="setpass" class="page-btn" style="background-color:{{btncolor}}">确定</button>
+        </view>
+
+        <modal hidden="{{hidden}}" title="修改成功" confirm-text="确定" no-cancel="{{nocancel}}" bindconfirm="confirm" >
+            <view class="menuspan">密码修改成功!点击确定跳转至登陆页面.</view>
+        </modal>
+    </view>
+</template>
+
+<script>
+ import wepy from 'wepy';
+ export default class Setpass extends wepy.page {
+
+     data = {
+         token:'',
+         setnewpass:'',
+         surenewpass:'',
+         warning:'',
+         btncolor:'',
+         hidden:true,
+         nocancel:true
+     }
+     components = {};
+     methods = {
+         setnewpass(e){
+             this.setnewpass = e.detail.value.replace(/[\W]/g,'');
+             return this.setnewpass;
+         },
+         surenewpass(e){
+             this.surenewpass = e.detail.value.replace(/[\W]/g,'');
+             return this.surenewpass;
+         },
+         setpass(){
+             let self = this;
+             if(!self.setnewpass) {
+                 this.warning='请输入密码';
+                 return;
+             }else{
+                 if(self.setnewpass.length<6){
+                     this.warning='密码长度必须大于6位'
+                     return;
+                 }
+             }
+             if(!self.surenewpass){
+                 this.warning='请再次输入密码';
+                 return;
+             }else{
+                 if(self.surenewpass.length <6){
+                     this.warning='密码长度必须大于6位'
+                     return;
+                 }
+             }
+             if(self.setnewpass!=self.surenewpass){
+                 this.warning='两次密码不一致，请重新输入';
+                 return;
+             }else {
+                 this.warning='';
+             }
+             wx.request({
+                 url:'https://api.yingtong-pm.cn/v1/client/updatePwd',
+                 data:{
+                     token:self.token,
+                     passWord1:self.setnewpass,
+                     passWord2:self.surenewpass
+                 },
+                 method:'POST',
+                 header:{
+                     "Content-Type": "application/json"
+                 },
+                 success: function(res) {
+                     let data = res.data;
+                     if(data.code==200)
+                     {
+                         self.setData({
+                             hidden:false
+                         })
+                     }else {
+                         wx.showToast({
+                             title: '修改失败',
+                             icon:'success',
+                             duration:3000
+                         })
+                     }
+                 }
+             })
+         }
+     };
+     confirm(){
+         let _this=this;
+         _this.setData({
+             hidden:true
+         })
+         wx.reLaunch({
+             url: 'login?page=login'
+         })
+     }
+     onLoad(e){
+         var self = this;
+         wx.getStorage({
+             key: 'token',
+
+             success: function (res) {
+                 let token = self.token = res.data;
+                 wx.request({
+                     url: 'https://api.yingtong-pm.cn/v1/client/checklogin',
+                     method: 'GET',
+                     data: {
+                         token: token,
+                     },
+
+
+                     header: {
+                         "Content-Type": "application/json"
+                     },
+                     success: function (res) {
+                         var data = res.data;
+
+                         if (data.code != 200) {
+                             wx.redirectTo({
+                                 url: 'login?page=index'
+                             });
+                         } else {
+
+                         }
+                     }
+                 })
+             }
+         })
+
+
+         wx.getStorage({
+             key: 'btncolor',
+             success: function (res) {
+                 let btncolor = self.btncolor = res.data;
+             },
+         });
+     }
+
+ }
+
+
+</script>

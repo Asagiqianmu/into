@@ -1,0 +1,42 @@
+<style type="less" src="styles/app.less"></style>
+
+<script>
+    import wepy from 'wepy';
+
+    export default class extends wepy.app {
+        config = {
+            "pages": [
+                "pages/index",
+                "pages/repair",
+                "pages/information",
+                "pages/login",
+                "pages/payment",
+                "pages/feedback",
+                "pages/payment-record",
+                "pages/open-record",
+                "pages/setpass",
+                "pages/opendoor-validate",
+                "pages/smarthome",
+                "pages/powerrate-record",
+                "pages/water-record",
+                "pages/smoke-record",
+                "pages/userregister",
+                "pages/forget-pass",
+                "pages/idcard-two",
+                "pages/idcard-one"
+            ],
+            "window": {
+                "navigationBarTitleText": "鹰同物业",
+                "navigationBarBackgroundColor": "#05a473",
+                "backgroundColor": "#fff",
+                "fullScreen": true
+
+            }
+        };
+
+        onLaunch() {
+
+        };
+
+    }
+</script>

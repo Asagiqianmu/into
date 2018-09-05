@@ -1,0 +1,28 @@
+
+    <vive class="page">
+        <view class="page-before" style="background-color:{{btncolor}}"/>
+        <view class="page-panel">
+            <view class="page-panel-bd">
+                <view style="color:{{btncolor}}" class="head">忘记密码</view>
+                <view class="menu">
+                <view class="menu-tl">
+                    <view style="color:{{btncolor}}">手机号:</view>
+                    <input maxlength="11" bindinput="telphone" class="menu-tl-in" type="number" placeholder="请输入手机号"/>
+                </view>
+                <view>
+                    <view style="color:{{btncolor}}">验证码:</view>
+                    <view class="menu-vc">
+                        <input maxlength="6" bindinput="vercode" class="menu-vc-in" type="number" placeholder="请输入验证码"/>
+                        <button class="menu-vc-bt" style="color:white;background-color:{{btncolor}}" bindtap="getcode" disabled="{{buttonDisable}}">{{verifyCode}}</button>
+                    </view>
+                </view>
+                <view class="menu-err">{{warning}}</view>
+                <button class="menu-bt" style="background-color:{{btncolor}}" bindtap="submit">获取密码</button>
+
+                <modal hidden="{{hidden}}" title="重置成功" confirm-text="确定" no-cancel="{{nocancel}}" bindconfirm="confirm">
+                    <view class="menu-span">密码会以短信方式发送至您的手机</view>
+                </modal>
+               </view>
+            </view>
+        </view>
+    </vive>

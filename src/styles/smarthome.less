@@ -1,0 +1,219 @@
+@rpx: 1rpx;
+@px2x: 2px;
+@sprites: "https://api.yingtong-pm.cn/images/commont/icon_img003.png";
+.sprites(@y:0) {
+  background: url(@sprites) 0 @y no-repeat;
+  background-size: 84 / @px2x;
+}
+
+.page {
+  position: absolute;
+  width: 100%;
+  min-height: 100%;
+  background: #eaeaea;
+  &-before {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 146 / @rpx;
+  }
+  &-panel {
+    position: relative;
+    box-sizing: border-box;
+    width: 85%;
+    min-height: 1000 / @rpx;
+    margin: 44 / @rpx auto 134 / @rpx;
+    background: #ffffff;
+    border-radius: 18 / @rpx;
+    box-shadow: #d0e0ea 0 4 / @rpx 10 / @rpx;
+    &-2 {
+      padding: 30 / @rpx 44 / @rpx;
+    }
+    &-3 {
+      padding-top: 40 / @rpx;
+    }
+    &-4{
+
+    }
+    &-hd {
+      display: flex;
+      align-items: baseline;
+      padding: 54 / @rpx 54 / @rpx 32 / @rpx;
+      height: 74 / @rpx;
+      line-height: 74 / @rpx;
+      .date {
+        flex: 1;
+        display: flex;
+        align-items: flex-end;
+        &-mouth {
+          font-size: 24 / @rpx;
+          line-height: 24 / @rpx;
+          margin-left: 10 / @rpx;
+          &-cn {
+            line-height: 48 / @rpx;
+
+          }
+          &-en {
+            color: #d9d9d9;
+          }
+        }
+        &-day {
+          font-size: 102 / @rpx;
+        }
+      }
+      .years {
+        font-size: 30 / @rpx;
+      }
+    }
+    &-bd {
+      .title {
+        text-align: center;
+        &-ch {
+          display: inline;
+          font-size: 48 / @rpx;
+          line-height: 68 / @rpx;
+          //border-bottom: #949494 solid 4 / @rpx;
+        }
+        &-en {
+          color: #d9d9d9;
+          font-size: 42 / @rpx;
+        }
+      }
+      .notice {
+        color: #666666;
+        font-size: 24 / @rpx;
+        line-height: 40 / @rpx;
+        padding: 20 / @rpx 70 / @rpx;
+        &-desc {
+          text-indent: 48 / @rpx;
+          position: absolute;
+        }
+      }
+      .menu {
+        padding: 60 / @rpx 56 / @rpx 40 / @rpx;
+        &-item {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 72 / @rpx;
+          margin-top: 40 / @rpx;
+          &-hd {
+            width: 78 / @px2x;
+            height: 72 / @px2x;
+            .icon {
+              display: block;
+              width: 78 / @px2x;
+              height: 72 / @px2x;
+              &-1 {
+                .sprites(-4 / @px2x);
+                transform:scale(1.2)
+              }
+              &-2 {
+                .sprites(-82 / @px2x);
+                transform:scale(1.2);
+                margin-left:-3px;
+              }
+              &-3 {
+                .sprites(-170 / @px2x);
+                transform:scale(1.2)
+              }
+
+              //&-6 {
+              //  .sprites(-720 / @px2x);
+              //  transform:scale(1.5);
+              //  height:29px;
+              //  margin-left:13px;
+              //  margin-top:8px;
+              //
+              //}
+            }
+          }
+          &-bd {
+            flex: 1;
+            margin-left: 24 / @rpx;
+            text-align: left;
+            .text {
+              font-size: 36 / @rpx;
+
+            }
+            .desc {
+              font-size: 20 / @rpx;
+              color: #949494;
+            }
+          }
+          &-ft {
+            &:after {
+              display: inline-block;
+              width: 14 / @rpx;
+              height: 14 / @rpx;
+              box-sizing: border-box;
+              content: "";
+              border-top: #949494 solid 4 / @rpx;
+              border-right: #949494 solid 4 / @rpx;
+              transform: rotate(45deg);
+            }
+          }
+          &:active {
+            opacity: .7;
+          }
+        }
+      }
+      .keys {
+        max-height: 760 / @rpx;
+        overflow: auto;
+        margin-top: 20 / @rpx;
+        padding-bottom: 58 / @rpx;
+        &-item {
+          box-sizing: border-box;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0 / @rpx 20 / @rpx;
+          height: 54 / @rpx;
+          margin-bottom: 40 / @rpx;
+          border-bottom: #949494 solid 1px;
+          &-hd {
+            font-size: 36 / @rpx;
+          }
+          &-bd {
+            flex: 1;
+            margin-left: 30 / @rpx;
+            color: #666666;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: 28 / @rpx;
+          }
+          &-ft {
+            &:after {
+              position: relative;
+              top: -4 / @rpx;
+              display: inline-block;
+              width: 14 / @rpx;
+              height: 14 / @rpx;
+              box-sizing: border-box;
+              content: "";
+              border-top: #949494 solid 4 / @rpx;
+              border-right: #949494 solid 4 / @rpx;
+              transform: rotate(45deg);
+            }
+
+          }
+          &-va {
+            position: absolute;
+            margin-top: -30px;
+            padding-left: 60px;
+          }
+          &:nth-last-child(1) {
+            margin-bottom: 0;
+          }
+          &:active {
+            opacity: .7;
+          }
+        }
+      }
+    }
+  }
+}

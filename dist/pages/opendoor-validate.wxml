@@ -1,0 +1,51 @@
+
+    <view class="page">
+
+        <view class="page-panel">
+            <view class="title">
+                <view class="title-door ">选择开门方式</view>
+                <view class="title-en">KEYS</view>
+            </view>
+            <view class=".choose-door">
+                <view class="opendoor-1" bindtap="openDoor">远程开门</view>
+
+                <view bindtap="hideDialog" class="dialog-mod {{!showDialog ? 'hide' : ''}}" data-wpyhidedialog-a="">
+                    <view class="mask"/>
+                    <view class="dialog">
+                        <view class="dialog-bd">
+                            <image class="loading {{!dialogLoading ? 'hide' : ''}}" src="../images/img-loading.gif"/>
+                            <image class="fail {{!dialogFail ? 'hide' : ''}}" src="../images/img-fail.png"/>
+                            <image class="success {{!dialogSuccess ? 'hide' : ''}}" src="../images/img-success.png"/>
+                        </view>
+                    </view>
+                </view>
+
+                <view class="opendoor-2" bindtap="newopendoor">发送授权</view>
+
+            </view>
+            <view class="modal-mask" bindtap="hideModal" catchtouchmove="preventTouchMove"  wx:if="{{showModal}}"/>
+            <view class="modal-dialog"  wx:if="{{showModal}}">
+                <view class="modal-title">输入用户信息</view>
+
+                <view class="modal-content">
+                    <view class="modal-input-1">
+                        <input placeholder-class="input-holder" type="text" maxlength="11" bindinput="inputname" class="input-1" placeholder="请输入账号"/>
+
+                    </view>
+                    <view class="modal-input-2">
+                        <input placeholder-class="input-holder" type="tel" maxlength="18" bindinput="inputpas" class="input-2" placeholder="请输入密码"/>
+
+                    </view>
+                    <view class="modal-input-2">
+                        <input placeholder-class="input-holder" type="text" maxlength="11" bindinput="inputtime" class="input-2" placeholder="请输入授权时长（默认为24小时）"/>
+
+                    </view>
+                </view>
+                <view class="modal-footer">
+                    <view class="btn-cancel" bindtap="onCancel" data-status="cancel">取消</view>
+                    <view class="btn-confirm" bindtap="onConfirm" data-status="confirm">确定</view>
+                </view>
+            </view>
+
+        </view>
+    </view>

@@ -1,0 +1,99 @@
+@rpx: 1rpx;
+@px2x: 2px;
+@sprites: "https://api.yingtong-pm.cn/images/commont/icon_img001.png";
+.sprites(@y:0) {
+  background: url(@sprites) 0 @y no-repeat;
+  background-size: 130 / @px2x;
+}
+
+.page {
+  position: absolute;
+  width: 100%;
+  min-height: 100%;
+  background: #eaeaea;
+  &-list {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -4%;
+    padding: 36 / @rpx 42 / @rpx;
+  }
+  &-item {
+    width: 46%;
+    background: #fff;
+    border-radius: 10 / @rpx;
+    margin: 0 0 4% 4%;
+    box-shadow: #c7dee3 0 4 / @rpx 8 / @rpx;
+    &-bd {
+      box-sizing: border-box;
+      height: 274 / @rpx;
+      padding-top: 32 / @rpx;
+      border-bottom: #e9e9e9 solid 4 / @rpx;
+      &:active{
+        opacity: .7;
+      }
+      .icon {
+        display: block;
+        width: 100 / @px2x;
+        height: 100 / @px2x;
+        margin: 0 auto;
+        &-1 {
+          .sprites();
+        }
+        &-3 {
+          .sprites(-108 / @px2x);
+        }
+        &-2 {
+          .sprites(-216 / @px2x);
+        }
+        &-4 {
+          .sprites(-324 / @px2x);
+        }
+        &-5 {
+          .sprites(-986 / @px2x);
+        }
+      }
+      .desc{
+        display: block;
+        text-align: center;
+        margin-top: 14 / @rpx;
+        line-height: 44 / @rpx;
+        font-size: 36 / @rpx;
+      }
+      .text{
+        display: block;
+        color: #666666;
+        font-size: 26 / @rpx;
+        text-align: center;
+      }
+    }
+    &-ft {
+      line-height: 70 / @rpx;
+      font-size: 0;
+      padding: 0 44 / @rpx;
+      white-space: nowrap;
+      overflow: hidden;
+      .unit{
+        font-size: 26 / @rpx;
+        color: #666666;
+        vertical-align: middle;
+      }
+      .amount{
+        margin-left: 32 / @rpx;
+        font-size: 40 / @rpx;
+        color: #ff9e40;
+        vertical-align: middle;
+      }
+      .input{
+        display: inline-block;
+        margin-left: 32 / @rpx;
+        width: 100 / @rpx;
+        font-size: 26 / @rpx;
+        color: #666;
+        vertical-align: middle;
+        &__placeholder{
+          color: #999;
+        }
+      }
+    }
+  }
+}

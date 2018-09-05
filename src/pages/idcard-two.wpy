@@ -1,0 +1,232 @@
+<style type="less" src="../styles/userregister.less"></style>
+<template>
+    <vive class="page">
+        <view class="page-before" style="background-color:{{btncolor}}"></view>
+        <view class="page-panel" >
+            <view class="page-panel-bd">
+                <view style="color:{{btncolor}}" class="head">用户认证</view>
+                <view class="menu3">
+                    <view class="menu3-sfz">
+                        <image bindtap="previewImage" class="menu3-sfz-img" src="{{tempFilePaths3}}"></image>
+                        <button class="menu3-sfz-bt" bindtap="upimg3" style="background-color:{{btncolor}}">手持身份证</button>
+                     </view>
+                     <view class="menu3-name">
+                        <view style="color:{{btncolor}}">姓名</view>
+                        <input type="text" placeholder="请输入姓名" bindinput="username"></input>
+                     </view>
+                    <view class="menu3-idcard">
+                        <view style="color:{{btncolor}}">身份证号码</view>
+                        <input type="text" placeholder="请输入身份证号码" bindinput="idcard" maxlength="18"></input>
+                    </view>
+                    <view class="menu3-idcard">
+                        <view style="color:{{btncolor}}">E-mail邮箱</view>
+                        <input type="text" placeholder="请输入E-mail邮箱" bindinput="email"></input>
+                    </view>
+
+                    <view class="menu3-bt">
+                        <view class="menu3-bt-err">{{warning}}</view>
+                        <button bindtap="submit" class="menu3-bt-2" style="background-color:{{btncolor}}">提交审核</button>
+                        <view></view>
+                    </view>
+                    <modal hidden="{{hidden}}" title="注册完成" confirm-text="确定" no-cancel="{{nocancel}}" bindconfirm="confirm" >
+                        <view class="menu3-span1">注册已完成,正在审核中...</view>
+                        <view class="menu3-span2">1-3个工作日审核结果会以短信方式发送至你的手机.</view>
+                    </modal>
+                </view>
+            </view>
+        </view>
+    </vive>
+</template>
+<script>
+    import wepy from 'wepy';
+    export default class Idcardtwo extends wepy.page  {
+
+        data={
+            btncolor: '#05a473',
+            tempFilePaths3:['../images/sfz3.png'],
+            temp:'',
+            warning:'',
+            username:'',
+            idcard:'',
+            email:'',
+            uptelphone:'',
+            upBareaInfo:'',
+            updname:'',
+            upaddress:'',
+            hidden:true,
+            nocancel:true,
+            upimgurl3:'',
+            upimgurl1:'',
+            upimgurl2:''
+        }
+        components = {};
+        methods = {
+            username(e){
+                this.username=e.detail.value.replace(/[^A-Za-z0-9\u4e00-\u9fa5]+$/, '');
+                return this.username
+            },
+            idcard(e){
+                this.idcard=e.detail.value.replace(/[^0-9\X\x]/, '');
+                return this.idcard
+            },
+            email(e){
+                this.email=e.detail.value.replace(/[\u4e00-\u9fa5]/,'');
+                return this.email
+            },
+
+            upimg3() {
+                var self = this;
+                wx.chooseImage({
+                    count: 1,
+                    sizeType: ['compressed'],
+                    sourceType: ['album', 'camera'],
+                    success: function success(res) {
+                        console.log(res);
+                        self.tempFilePaths3 = res.tempFilePaths;
+                        self.setData({
+                            tempFilePaths3: res.tempFilePaths
+                        });
+                        var tempFilePaths = res.tempFilePaths[0];  //图片
+
+                        wx.uploadFile({
+                            url: 'https://api.yingtong-pm.cn/v1/fileupload', //接口地址
+                            header: {
+                                "Content-Type": "application/json"
+                            },
+                            filePath: tempFilePaths,　//待上传的图片，由 chooseImage获得
+                            name: 'image', //文件对应的参数名字(key)
+                            /*formData: data,  //其它的表单信息*/
+                            method: 'POST',
+                            success: function (res) {
+                                console.log(tempFilePaths);
+                                var data = JSON.parse(res.data);
+                                if(data.code == 200)
+                                {
+                                    self.imgurl3=data.img;
+
+                                    wx.showToast({
+                                        title: '上传成功',
+                                        icon:'success',
+                                        duration:3000
+                                    });
+                                }else {
+
+                                    wx.showToast({
+                                        title: '上传失败',
+                                        icon:'success',
+                                        duration:3000
+                                    });
+                                }
+                                console.log(self.imgurl3);
+                            }
+                        })
+                    }
+                });
+                console.log(self.data);
+            },
+            previewImage: function (e) {
+                var current=e.target.dataset.src;
+                wx.previewImage({
+                    current: current, // 当前显示图片的http链接
+                    urls: this.tempFilePaths3 // 需要预览的图片http链接列表
+                })
+            },
+        };
+        onLoad(options){
+            this.temp3 = this.tempFilePaths3;
+            /*this.setData({
+                telphone:options.telphone,
+                BareaInfo:options.BareaInfo,
+                dname:options.dname,
+                address:options.address,
+                imgurl1: options.imgurl1,
+                imgurl2 : options.imgurl2,
+                imgurl3 : options.imgurl3,
+            });*/
+            this.uptelphone = options.telphone;
+            this.upBareaInfo = options.BareaInfo;
+            this.updname = options.dname;
+            this.upaddress = options.address;
+            this.upimgurl1 = options.imgurl1;
+            this.upimgurl2 = options.imgurl2;
+            this.upimgurl3 = options.imgurl3;
+            console.log(options.imgurl1);
+            console.log(options.imgurl2);
+        }
+        submit(){
+            let patidcard= /^\d{6}(18|19|20)?\d{2}(0[1-9]|1[012])(0[1-9]|[12]\d|3[01])\d{3}(\d|[xX])$/;
+            let pattern= /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+            let strEmail=pattern.test(this.email);
+            let stridcard=patidcard.test(this.idcard);
+            let _this=this;
+            let appId = 'wxf56fd8fb6499bccb';
+            if(!this.username){
+                this.warning="姓名不能为空!";
+                return;
+            }if(!this.idcard){
+                this.warning="身份证号码不能为空!";
+                return;
+            }if(!stridcard){
+                this.warning="身份证号码格式不正确!";
+                return;
+            }if(!this.email){
+                this.warning="E-mail邮箱不能为空!";
+                return;
+            }if(!strEmail){
+                this.warning="E-mail邮箱格式不正确!";
+                return;
+            }if(this.temp3 == this.tempFilePaths3){
+                this.warning="请选择手持身份证照片!";
+                return;
+            }else {
+                this.warning=""
+            }
+
+            wx.request({
+               url:'https://api.yingtong-pm.cn/v1/client/userregister',
+                data:{
+                    appid: appId,
+                    telphone:_this.uptelphone,
+                    pca:_this.upBareaInfo,
+                    village:_this.updname,
+                    address:_this.upaddress,
+                    name:_this.username,
+                    idnum:_this.idcard,
+                    email:_this.email,
+                    idcard1:_this.imgurl1,
+                    idcard2:_this.imgurl2,
+                    idcard3:_this.imgurl3
+                },
+                methods:'POST',
+                header: {
+                    "Content-Type": "application/json"
+                },
+                success: function (res) {
+                    let data = res.data;
+                    if (data.code == 200){
+
+                        _this.setData({
+                            hidden:false
+                        })
+                    }else{
+                        wx.showToast({
+                            title: '失败',
+                            icon: 'success',
+                            duration: 3000,
+                        })
+                    }
+                }
+            });
+        }
+        confirm(){
+            let _this=this;
+            _this.setData({
+                hidden:false
+            });
+            wx.reLaunch({
+                url: 'login?page=login'
+            });
+        }
+    }
+
+</script>

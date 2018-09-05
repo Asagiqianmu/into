@@ -1,0 +1,37 @@
+
+    <vive class="page">
+        <view class="page-before" style="background-color:{{btncolor}}"/>
+        <view class="page-panel">
+            <view class="page-panel-bd">
+                <view style="color:{{btncolor}}" class="head">用户认证</view>
+                <view class="menu3">
+                    <view class="menu3-sfz">
+                        <image bindtap="previewImage" class="menu3-sfz-img" src="{{tempFilePaths3}}"/>
+                        <button class="menu3-sfz-bt" bindtap="upimg3" style="background-color:{{btncolor}}">手持身份证</button>
+                     </view>
+                     <view class="menu3-name">
+                        <view style="color:{{btncolor}}">姓名</view>
+                        <input type="text" placeholder="请输入姓名" bindinput="username"/>
+                     </view>
+                    <view class="menu3-idcard">
+                        <view style="color:{{btncolor}}">身份证号码</view>
+                        <input type="text" placeholder="请输入身份证号码" bindinput="idcard" maxlength="18"/>
+                    </view>
+                    <view class="menu3-idcard">
+                        <view style="color:{{btncolor}}">E-mail邮箱</view>
+                        <input type="text" placeholder="请输入E-mail邮箱" bindinput="email"/>
+                    </view>
+
+                    <view class="menu3-bt">
+                        <view class="menu3-bt-err">{{warning}}</view>
+                        <button bindtap="submit" class="menu3-bt-2" style="background-color:{{btncolor}}">提交审核</button>
+                        <view/>
+                    </view>
+                    <modal hidden="{{hidden}}" title="注册完成" confirm-text="确定" no-cancel="{{nocancel}}" bindconfirm="confirm">
+                        <view class="menu3-span1">注册已完成,正在审核中...</view>
+                        <view class="menu3-span2">1-3个工作日审核结果会以短信方式发送至你的手机.</view>
+                    </modal>
+                </view>
+            </view>
+        </view>
+    </vive>

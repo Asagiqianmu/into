@@ -1,0 +1,38 @@
+
+    <view class="page">
+        <view class="page-nav">
+            <view bindtap="handleCalendar" data-handle="prev" class="page-nav-item">前一月</view>
+            <view bindtap="chooseYearAndMonth" class="page-nav-item current" style="color:{{btncolor}}">{{cur_year ||
+                "2017"}} - {{cur_month || "1"}}
+            </view>
+            <view bindtap="handleCalendar" data-handle="next" class="page-nav-item">后一月</view>
+        </view>
+        <view class="page-timeline">
+            <view class="page-timeline-item"  wx:for="{{list}}" wx:key="{{index}}">
+                <view class="page-timeline-item-bd">
+                    <!--<text class="icon"></text>-->
+                    <text class="text" style="color:{{btncolor}}">门牌号:{{item.houseid}}</text>
+                    <text class="text" style="color:{{btncolor}};float: left">使用水量:{{item.use_count}}m³</text>
+                </view>
+
+                <view class="page-timeline-item-ft">
+                    <text class="icon"/>
+                    <text class="text" style="color:{{btncolor}}">{{item.time}}</text>
+                </view>
+            </view>
+        </view>
+        <view  wx:if="{{showPicker}}" class="picker box box-tb">
+            <view class="picker-btns box box-lr box-pack-between box-align-center">
+                <view class="picker-btn picker-cancel" data-type="cancel" bindtap="tapPickerBtnc">取消</view>
+                <view class="picker-btn picker-confirm" data-type="confirm" bindtap="tapPickerBtn">确定</view>
+            </view>
+            <picker-view class="flex picker-view" value="{{picker_value}}" bindchange="pickerChange">
+                <picker-view-column>
+                    <view class="picker-view-column" wx:for="{{picker_year}}">{{item}}年</view>
+                </picker-view-column>
+                <picker-view-column>
+                    <view class="picker-view-column" wx:for="{{picker_month}}">{{item}}月</view>
+                </picker-view-column>
+            </picker-view>
+        </view>
+    </view>

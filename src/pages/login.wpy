@@ -1,0 +1,199 @@
+<style type="less" src="../styles/login.less"></style>
+
+<template>
+    <view class="page">
+
+        <image class="page-bg" wx:if="{{ bg_imgUrl }}" src="{{ bg_imgUrl }}" />
+
+        <view class="page-panel">
+            <image wx:if="{{ imgUrl }}"  src="{{imgUrl}}" class="page-panel-logo"/>
+            <view class="page-panel-label">
+                <view class="hd">
+                    <text class="icon icon-1" ></text>
+                </view>
+                <view class="bd">
+                    <view class="bd-title" style="color:{{btncolor}}">账号</view>
+                    <input type="number" bindinput="usernameInput" value="{{inputtext}}" class="bd-input"
+                           placeholder-class="bd-input__placeholder" placeholder="请输入账号" maxlength="11" style="color:{{btncolor}}"></input>
+                </view>
+                <view class="ft">
+                    <text class="icon icon-1" bindtap="icon_clear"></text>
+                </view>
+            </view>
+            <view class="page-panel-label">
+                <view class="hd" >
+                    <text class="icon icon-2" ></text>
+                </view>
+                <view class="bd">
+                    <view class="bd-title" style="color:{{btncolor}}">密码</view>
+                    <input type="{{pass}}" bindinput="passwordInput" value="{{inputpass}}" class="bd-input"
+                           placeholder-class="bd-input__placeholder" placeholder="请输入密码" maxlength="18"></input>
+                </view>
+                <view class="ft">
+                    <text class="{{replace_icon}}" bindtap="hidepassword"></text>
+                </view>
+            </view>
+            <view class="page-panel-warning">{{warning}}</view>
+            <button @tap="login" class="page-panel-btn" style="background-color:{{btncolor}}"  >登陆</button>
+            <navigator url="userregister" class="page-panel-nav">
+            <view  class="page-panel-login">用户注册</view>
+            </navigator>
+            <navigator url="forget-pass" class="page-panel-na">
+            <view  class="page-panel-forget">忘记密码</view>
+            </navigator>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+
+    export default class Login extends wepy.page {
+        data = {
+            page: '',
+            username: '',
+            password: '',
+            warning: '',
+            btncolor: '#05a473',
+            inputtext:'',
+            inputpass:'',
+            pass:"password",
+            replace_icon:"icon icon-2"
+        };
+        components = {};
+        methods = {
+
+            icon_clear(){
+                this.setData({
+                    inputtext:'',
+                })
+            },
+
+            usernameInput(e) {
+                this.username = e.detail.value.replace(/\D/g, '');
+                return this.username;
+            },
+            passwordInput(e) {
+                this.password = e.detail.value;
+                return this.password;
+            },
+            hidepassword(){
+                if(this.pass=="password") {
+                    this.pass="text";
+                    this.replace_icon="icon icon-22";
+                }else{
+                    this.pass="password";
+                    this.replace_icon="icon icon-2";
+                }
+            },
+/*            register(){
+                wx.navigateTo({
+                    url: 'userregister'
+                });
+            },*/
+            login() {
+                let self = this;
+                let appId = 'wxf56fd8fb6499bccb';
+                let tel = /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/;
+                let strtel = tel.test(this.username);
+                if(!this.username){
+                    this.warning="手机号不能为空!";
+                    return;
+                }else if(!strtel){
+                    this.warning="手机号格式不正确!";
+                    return;
+                } else if (!this.password) {
+                    this.warning = '密码不能为空';
+                } else {
+                    this.warning = '';
+                    wx.request({
+                        url: 'https://api.yingtong-pm.cn/v1/client/dologin',
+                        data: {
+                            appid: appId,
+                            userName: this.username,
+                            passWord: this.password
+                        },
+                        method: 'POST',
+                        header: {
+                            "Content-Type": "application/json"
+                        },
+                        success: function (res) {
+                            let page = self.page;
+                            let data = res.data;
+                            if (data.code == 200) {
+                                wx.showToast({
+                                    title: '登陆成功',
+                                    icon: 'success',
+                                    duration: 2000,
+                                    complete: function () {
+                                        wx.setStorage({
+                                            key: "token",
+                                            data: data.msg
+                                        });
+                                        wx.setStorage({
+                                            key: "btncolor",
+                                            data: self.btncolor
+
+                                        });
+                                        wx.setStorage({
+                                            key: "iconimgUrl",
+                                            data: self.iconimgUrl
+                                        });
+
+                                        wx.redirectTo({
+                                            url: page || 'index'
+                                        });
+
+                                    }
+                                });
+                            } else {
+                                self.setData({
+                                    warning:'用户名或者密码不正确! 请重新输入',
+                                    /*inputpass:''*/
+                                })
+                                /*wx.showToast({
+                                    title: data.msg,
+                                    icon: 'success',
+                                    duration: 3000
+                                });*/
+                            }
+                        }
+                    })
+                }
+            }
+        };
+
+        onLoad(e) {
+            this.page = e.page;
+            this.$apply();
+            let appId = 'wxf56fd8fb6499bccb';
+            let seft = this;
+            wx.request({
+                url: 'https://api.yingtong-pm.cn/v1/client/getImg',
+                data: {
+                    appid: appId,
+                },
+                method: 'GET',
+                header: {
+                    "Content-Type": "application/json"
+                },
+
+                success: function (res) {
+                    let data = res.data;
+
+                    // var bgColor = seft.data.btncolor == '#38b1fa' ? '#5cb85c' : '#38b1fa';
+
+                    if (data.code == 200) {
+                        seft.setData({
+                            imgUrl: 'https://api.yingtong-pm.cn' + data.logo,
+                            bg_imgUrl: 'https://api.yingtong-pm.cn' + data.bg,
+                            iconimgUrl: 'https://api.yingtong-pm.cn' + data.icon,
+                        });
+                    }
+                }
+            });
+
+        };
+
+    }
+</script>

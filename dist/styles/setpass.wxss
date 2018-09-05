@@ -1,0 +1,1 @@
+.page{position:absolute;width:100%;min-height:100%;background:#eaeaea}.page:before{position:absolute;content:"";top:0;left:0;right:0;background:#38b1fa;height:146rpx}.page-before-pass{position:relative}

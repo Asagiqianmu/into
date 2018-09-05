@@ -1,0 +1,18 @@
+
+  <view class="page">
+    <view class="page-before" style="background-color:{{btncolor}}"/>
+    <view class="page-list">
+      <view  wx:for="{{list}}" wx:key="{{index}}" class="page-item page-item-{{item.id}}">
+        <view class="tag">{{item.service_type}}</view>
+        <image src="https://api.yingtong-pm.cn{{item.headimg}}" class="icon"/>
+        <view class="dl">
+          <view class="dl-dt">联系方式</view>
+          <view class="dl-dd">{{item.c_telphone}} {{item.contacts}}</view>
+        </view>
+        <view class="dl">
+          <view class="dl-dt">管理处地址</view>
+          <view class="dl-dd">{{item.c_address}}</view>
+        </view>
+      </view>
+    </view>
+  </view>

@@ -1,0 +1,190 @@
+<style type="less" src="../styles/forget-pass.less"></style>
+<template>
+    <vive class="page">
+        <view class="page-before" style="background-color:{{btncolor}}"></view>
+        <view class="page-panel" >
+            <view class="page-panel-bd">
+                <view style="color:{{btncolor}}" class="head">忘记密码</view>
+                <view class="menu">
+                <view class="menu-tl">
+                    <view style="color:{{btncolor}}">手机号:</view>
+                    <input maxlength="11"  bindinput="telphone" class="menu-tl-in" type="number" placeholder="请输入手机号"></input>
+                </view>
+                <view>
+                    <view style="color:{{btncolor}}">验证码:</view>
+                    <view class="menu-vc">
+                        <input maxlength="6" bindinput="vercode" class="menu-vc-in" type="number"  placeholder="请输入验证码"></input>
+                        <button class="menu-vc-bt" style="color:white;background-color:{{btncolor}}" bindtap="getcode" disabled="{{buttonDisable}}">{{verifyCode}}</button>
+                    </view>
+                </view>
+                <view class="menu-err">{{warning}}</view>
+                <button class="menu-bt" style="background-color:{{btncolor}}" bindtap="submit">获取密码</button>
+
+                <modal hidden="{{hidden}}" title="重置成功" confirm-text="确定" no-cancel="{{nocancel}}" bindconfirm="confirm" >
+                    <view class="menu-span">密码会以短信方式发送至您的手机</view>
+                </modal>
+               </view>
+            </view>
+        </view>
+    </vive>
+</template>
+<script>
+    import wepy from 'wepy';
+
+    export default class ForgetPass extends wepy.page {
+        data = {
+            btncolor: '#05a473',
+            telphone:'',
+            vercode:'',
+            warning:'',
+            hidden:true,
+            nocancel:true,
+            buttonDisable:false
+        };
+        components = {};
+        methods = {
+            telphone(e){
+                this.telphone = e.detail.value.replace(/[^0-9]/, '');
+                return this.telphone;
+                console.log(this.telphone);
+            },
+            vercode(e){
+                this.vercode = e.detail.value.replace(/[^0-9]/, '');
+                return this.vercode;
+                console.log(this.vercode);
+            }
+        };
+
+        onLoad(){
+            this.setData({
+                verifyCode:'获取验证'
+            })
+
+        };
+        getcode(){
+            let _this=this;
+            let tel = /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/;
+            let strtel = tel.test(this.telphone);
+            if(!this.telphone){
+                this.warning="手机号不能为空!";
+                return;
+            }else if(!strtel){
+                this.warning="手机号格式不正确!";
+                return;
+            }else {
+                this.warning="";
+            }
+
+            wx.request({
+                url:'https://api.yingtong-pm.cn/v1/client/getcode',
+                data:{
+                    telphone:_this.telphone
+                },
+                method:'POST',
+                header:{
+                    "Content-Type": "application/json"
+                },
+                success:function (res) {
+                    let data = res.data;
+                    console.log(data);
+                    if(data.code==200){
+                        _this.setData({
+                            ctime:data.ctime,
+                        })
+                         wx.showToast({
+                             title: data.msg,
+                             icon:'success',
+                             duration:3000
+                          });
+                        if(_this.data.buttonDisable) return false;
+                        var c = 60;
+                        var intervalId = setInterval(function(){
+                            c = c-1;
+                            _this.setData({
+                                verifyCode:c + 's后重发',
+                                buttonDisable:true
+                            })
+                            if(c==0){
+                                clearInterval(intervalId);
+                                _this.setData({
+                                    verifyCode:'获取验证',
+                                    buttonDisable:false
+                                })
+                            }
+                        },1000);
+                    }else {
+                        wx.showToast({
+                            title: data.msg,
+                            icon:'success',
+                            duration:3000
+                        })
+                    }
+                }
+            })
+        }
+        confirm(){
+            let _this = this;
+
+            _this.setData({
+                hidden:true
+            })
+            wx.reLaunch({
+                url: 'login?page=login'
+            });
+        }
+        submit(){
+            let _this=this;
+            let tel = /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/;
+            let strtel = tel.test(this.telphone);
+            let appId = 'wxf56fd8fb6499bccb';
+            if(!this.telphone){
+                this.warning="手机号不能为空!";
+                return;
+            }else if(!strtel){
+                this.warning="手机号格式不正确!";
+                return;
+            }else if(!this.vercode){
+                this.warning="验证码不能为空!";
+                return;
+            }else {
+                this.warning="";
+            }
+            wx.request({
+                url:'https://api.yingtong-pm.cn/v1/client/forgetpwd',
+                data:{
+                    appid: appId,
+                    telphone:_this.telphone,
+                    code:_this.vercode,
+                    ctime:_this.ctime
+                },
+                methods:'POST',
+                header:{
+                    "Content-Type": "application/json"
+                },
+                success:function (res) {
+                    let data = res.data;
+                    if(data.code==200)
+                    {
+                        _this.setData({
+                            hidden:false
+                        })
+                        /*wx.showToast({
+                            title: '成功',
+                            icon:'success',
+                            duration:2000
+                        })*/
+                    }else {
+                        _this.setData({
+                            warning:'验证码不正确! 请重新输入',
+                        })
+                        /*wx.showToast({
+                            title: '修改失败',
+                            icon:'success',
+                            duration:3000
+                        })*/
+                    }
+                }
+            })
+        }
+    }
+</script>

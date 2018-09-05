@@ -1,0 +1,243 @@
+@rpx: 1rpx;
+@px2x: 2px;
+.page {
+  position: absolute;
+  width: 100%;
+  min-height: 100%;
+  background: #eaeaea;
+
+  &:before{
+    position:absolute;
+    content:"";
+    top:0;
+    left:0;
+    right:0;
+    background:#38b1fa;
+    height:146 / @rpx}
+
+
+  .show-btn {
+    margin-top: 100 / @px2x;
+    color: #22cc22;
+  }
+
+  .modal-mask {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #000;
+    opacity: 0.5;
+    overflow: hidden;
+    z-index: 9000;
+    color: #fff;
+  }
+
+  .modal-dialog {
+    width: 540 / @px2x;
+    overflow: hidden;
+    position: fixed;
+    top: 40%;
+    left: 0;
+    z-index: 9999;
+    background: #f9f9f9;
+    margin: -180 / @px2x 105 / @px2x;
+    border-radius: 36 / @px2x;
+  }
+
+  .modal-title {
+    padding-top: 50 / @px2x;
+    font-size: 36 / @px2x;
+    color: #030303;
+    text-align: center;
+  }
+
+  .modal-content {
+    padding: 50 / @px2x 32 / @px2x;
+  }
+
+  .modal-input-1 {
+    display: flex;
+    background: #fff;
+    border: 2 / @px2x solid #ddd;
+    border-radius: 4 / @px2x;
+    font-size: 28 / @px2x;
+  }
+
+  .modal-input-2 {
+    display: flex;
+    background: #fff;
+    border: 2 / @px2x solid #ddd;
+    border-radius: 4 / @px2x;
+    font-size: 28 / @px2x;
+    margin-top: 15px;
+  }
+
+  .input-1 {
+    width: 100%;
+    height: 82 / @px2x;
+    font-size: 28 / @px2x;
+    line-height: 28 / @px2x;
+    padding: 0 20 / @px2x;
+    box-sizing: border-box;
+    color: #333;
+  }
+  .input-2 {
+    width: 100%;
+    height: 82 / @px2x;
+    font-size: 28 / @px2x;
+    line-height: 28 / @px2x;
+    padding: 0 20 / @px2x;
+    box-sizing: border-box;
+    color: #333;
+  }
+
+  input-holder {
+    color: #666;
+    font-size: 28 / @px2x;
+  }
+
+  .modal-footer {
+    display: flex;
+    flex-direction: row;
+    height: 86 / @px2x;
+    border-top: 1px solid #dedede;
+    font-size: 34 / @px2x;
+    line-height: 86 / @px2x;
+  }
+
+  .btn-cancel {
+    width: 50%;
+    color: #666;
+    text-align: center;
+    border-right: 1px solid #dedede;
+  }
+
+  .btn-confirm {
+    width: 50%;
+    color: #ec5300;
+    text-align: center;
+  }
+
+}
+.page-panel {
+  position: relative;
+  box-sizing: border-box;
+  width: 85%;
+  min-height: 1000 / @rpx;
+  margin: 44 / @rpx auto 134 / @rpx;
+  background: #ffffff;
+  border-radius: 18 / @rpx;
+  box-shadow: #d0e0ea 0 4 / @rpx 10 / @rpx;
+}
+.title{
+
+  text-align: center;
+  padding-top: 30px;
+
+}
+.title-door{
+  display: inline;
+  color: #38b1fa;
+  font-size: 48 / @rpx;
+  line-height: 68 / @rpx;
+  border-bottom: #38b1fa solid 4 / @rpx;
+  color: #38b1fa;
+
+
+}
+.title-en{
+  color: #bde6ff;
+}
+.choose-door{
+  position:absolute;
+  padding-left:10%;
+  text-align: center;
+  height:51%;
+  width:80% ;
+  margin-top:35px;
+  font-size: 25px;
+  color: white;
+
+}
+.opendoor-1
+{
+  position:relative;
+  text-align: center;
+  float: left;
+  height:50%;
+  width:49%;
+  background:#8ad0fb;
+  border-right:0.5 /@rpx solid #eaeaea;
+  border-bottom-left-radius:18/@rpx;
+  border-top-left-radius:18/@rpx;
+  line-height:130px;
+
+
+}
+.opendoor-2
+{
+  position:relative;
+  text-align: center;
+  float: left;
+  height:50%;
+  width:49%;
+  background:#8ad0fb;
+  border-left:0.5 /@rpx solid #eaeaea;
+  border-bottom-right-radius:18/@rpx;
+  border-top-right-radius:18/@rpx;
+  line-height:130px;
+}
+
+.mask {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 96;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.dialog {
+  position: relative;
+  z-index: 100;
+  width: auto;
+  min-width: 170px;
+  text-align: center;
+  color: #ffffff;
+  margin-top:-40/@rpx;
+}
+  .dialog-mod {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    width: 100%;
+    height: 100%;
+  }
+ .dialog-bd {
+    .loading {
+      display: block;
+      width: 516 / @px2x;
+      height: 439 / @px2x;
+    }
+    .fail {
+      display: block;
+      width: 483 / @px2x;
+      height: 433 / @px2x;
+    }
+    .success {
+      display: block;
+      width: 483 / @px2x;
+      height: 390 / @px2x;
+    }
+  }

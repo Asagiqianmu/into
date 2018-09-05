@@ -1,0 +1,101 @@
+@rpx: 1rpx;
+@px2x: 2px;
+.page {
+  position: absolute;
+  width: 100%;
+  min-height: 100%;
+  background: #eaeaea;
+
+  &-before{
+    position:absolute;
+    content:"";
+    top:0;
+    left:0;
+    right:0;
+    height:146 / @rpx}
+}
+  .page .page-view{
+    position:relative;
+    box-sizing:border-box;
+    width:85%;
+    height:750/@rpx;
+    margin:44/@rpx auto 0;
+    padding:36/@rpx;
+    background:#ffffff;
+    border-radius:18/@rpx;
+    box-shadow:#d0e0ea 0 4/@rpx 10/@rpx}
+
+
+   .page .new-pass{
+     box-sizing: border-box;
+     min-width: 85%;
+     max-width: 85%;
+     height: 86 / @rpx;
+     line-height: 86 / @rpx;
+     margin: 22 / @rpx auto 0;
+     margin-top: 132/@rpx;
+     padding: 0 36 / @rpx;
+     color: #666;
+     text-align: center;
+     background: #ffffff;
+     border-radius: 18 / @rpx;
+     box-shadow: #9FB6CD 0 4 / @rpx 10 / @rpx;
+
+   }
+&__placeholder{
+  color: #9b9b9b;
+}
+
+   .page .surenew-pass{
+
+     box-sizing: border-box;
+     min-width: 85%;
+     max-width: 85%;
+     height: 96 / @rpx;
+     line-height: 96 / @rpx;
+     margin: 22 / @rpx auto 0;
+     margin-top: 25px;
+     padding: 0 36 / @rpx;
+     color: #666;
+     text-align: center;
+     background: #ffffff;
+     border-radius: 18 / @rpx;
+     box-shadow: #9FB6CD 0 4 / @rpx 10 / @rpx;
+
+   }
+
+  .page .page-btn{
+    width: 45%;
+    height: 92 / @rpx;
+    line-height: 92 / @rpx;
+    border-radius: 92 / @rpx;
+    text-align: center;
+    border: none;
+    background: #38b1fa;
+    color: #fff;
+    font-size: 36 / @rpx;
+    margin: 30 / @rpx auto 0;
+    margin-top: 40px;
+    &:active {
+      opacity: .7;
+    }
+  }
+.pass-warning{
+  position: absolute;
+  left: 0;
+  right: 0;
+  font-size: 24 / @rpx;
+  margin-top: 13px;
+  color: #ff6666;
+  text-align: center;
+}
+.cue-title{
+  font-size:16px;
+  text-align:center;
+
+}
+.menuspan{
+  font-size: 36/@rpx;
+  text-align: center;
+  padding: 20/@rpx 0;
+}

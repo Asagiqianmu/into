@@ -1,0 +1,504 @@
+<style type="less" src="../styles/index.less"></style>
+
+<template>
+    <view class="page">
+        <view class="page-before" style="background-color:{{btncolor}}"></view>
+        <view class="page-panel" hidden="{{tab != 1}}">
+            <view class="page-panel-hd">
+                <view class="date">
+                    <view class="date-day" style="color:{{btncolor}}">{{day}}</view>
+                    <view class="date-mouth">
+                        <view class="date-mouth-cn" style="color:{{btncolor}}"> {{monthCn}}</view>
+                        <view class="date-mouth-en" >{{monthEn}}</view>
+                    </view>
+                </view>
+                <view class="years" style="color:{{btncolor}}">{{years}}</view>
+            </view>
+            <view class="page-panel-bd">
+                <view class="title">
+                    <view class="title-ch" style="color:{{btncolor}};border-bottom: {{btncolor}} solid 4rpx; " >{{title}}</view>
+                    <view class="title-en">{{subtitle}}</view>
+                </view>
+                <view class="notice">
+                    <view class="notice-title">尊敬的住户：</view>
+                    <view class="notice-desc">{{notice}}</view>
+                </view>
+                <view class="menu">
+                    <navigator url="payment" class="menu-item">
+                        <view class="menu-item-hd">
+                            <text class="icon icon-1"></text>
+                        </view>
+                        <view class="menu-item-bd">
+                            <view class="text" style="color:{{btncolor}}">生活缴费</view>
+                            <view class="desc">各种生活费用缴纳，一键搞定</view>
+                        </view>
+                        <view class="menu-item-ft"></view>
+                    </navigator>
+                    <navigator url="repair" class="menu-item">
+                        <view class="menu-item-hd">
+                            <text class="icon icon-2"></text>
+                        </view>
+                        <view class="menu-item-bd">
+                            <view class="text" style="color:{{btncolor}}">居家维修</view>
+                            <view class="desc">日常居家维修联系，上门服务</view>
+                        </view>
+                        <view class="menu-item-ft"></view>
+                    </navigator>
+                    <navigator url="information" class="menu-item">
+                        <view class="menu-item-hd">
+                            <text class="icon icon-3"></text>
+                        </view>
+                        <view class="menu-item-bd">
+                            <view class="text" style="color:{{btncolor}}">便民信息</view>
+                            <view class="desc">物业便民联系热线，随时待命</view>
+                        </view>
+                        <view class="menu-item-ft"></view>
+                    </navigator>
+                </view>
+            </view>
+        </view>
+        <view class="page-panel page-panel-2" hidden="{{tab != 2}}">
+            <view class="page-panel-bd">
+                <view class="title">
+                    <view class="title-ch" style="color:{{btncolor}}">选择钥匙</view>
+                    <view class="title-en">KEYS</view>
+                </view>
+                <view class="keys">
+                    <view wx:for="{{keyList}}" wx:key="{{index}}"
+                          data-wpyopendoor-a="{{item.key_id}}" >
+                        <view class="{{templist[index] != -1  ? 'keys-item':'kes-itm'}}" bindtap="opendoorvalidate({{index}})">
+                        <view class="keys-item-hd" style="color:{{btncolor}}">钥匙{{item.key_id}}:</view>
+                        <view class="keys-item-bd" >{{item.keyname}}</view>
+                        <view class= "{{templist[index] != -1  ? 'keys-item-ft':'syft'}}"></view>
+                        </view>
+                        <view class="keys-item-va" style="color:{{btncolor}}">
+                        <view calss="opendoor-validate" hidden="{{templist[index] != -1 ? true : false}}" >
+                            <view class="opendoor-1" bindtap="openDoor" hidden="{{keyList[index].type != 2 ? false : true}}">一键开门</view>
+                            <view class="opendoor-2" bindtap="newopendoor" hidden="{{keyList[index].type != 1 ? false : true}}">远程授权</view>
+                        </view>
+                        </view>
+                    </view>
+                </view>
+
+
+
+                <view class="modal-mask" catchtouchmove="preventTouchMove"
+                      wx:if="{{showModal}}"></view>
+                <view class="modal-dialog" wx:if="{{showModal}}">
+                    <view class="modal-title">输入用户信息</view>
+
+                    <view class="modal-content">
+                        <view class="modal-input-1">
+                            <input placeholder-class="input-holder" type="text" maxlength="11" bindinput="inputname"
+                                   class="input-1" placeholder="请输入姓名"></input>
+
+                        </view>
+                        <view class="modal-input-2">
+                            <input placeholder-class="input-holder" type="number" maxlength="11" bindinput="inputtel"
+                                   class="input-2" placeholder="请输入手机号"></input>
+
+                        </view>
+                        <view class="modal-input-2">
+                            <input placeholder-class="input-holder" type="number" maxlength="3" bindinput="inputtime"
+                                   class="input-2" placeholder="请输入授权时长（小时）"></input>
+                        </view>
+                        <view class="modal-input-err">{{warning}}</view>
+                    </view>
+                    <view class="modal-footer">
+                        <view class="btn-cancel" bindtap="onCancel" data-status="cancel">取消</view>
+                        <view class="btn-confirm" bindtap="onConfirm" data-status="confirm" style="color:{{btncolor}}">确定</view>
+                    </view>
+                </view>
+            </view>
+
+        </view>
+        <view class="page-panel page-panel-3" hidden="{{tab != 3}}">
+            <view class="page-panel-bd">
+                <view class="menu">
+                    <navigator url="setpass" class="menu-item">
+                        <view class="menu-item-hd">
+                            <text class="icon icon-6"></text>
+                        </view>
+                        <view class="menu-item-bd">
+                            <view class="text" style="color:{{btncolor}}">修改密码</view>
+                            <view class="desc">修改用户登陆密码</view>
+                        </view>
+                        <view class="menu-item-ft"></view>
+                    </navigator>
+                    <navigator url="open-record" class="menu-item">
+                        <view class="menu-item-hd">
+                            <text class="icon icon-4"></text>
+                        </view>
+                        <view class="menu-item-bd">
+                            <view class="text" style="color:{{btncolor}}">开门记录</view>
+                            <view class="desc">开门时间具体信息查询</view>
+                        </view>
+                        <view class="menu-item-ft"></view>
+                    </navigator>
+                    <navigator url="payment-record" class="menu-item">
+                        <view class="menu-item-hd">
+                            <text class="icon icon-1"></text>
+                        </view>
+                        <view class="menu-item-bd">
+                            <view class="text" style="color:{{btncolor}}">缴费记录</view>
+                            <view class="desc">日常生活缴费信息查询</view>
+                        </view>
+                        <view class="menu-item-ft"></view>
+                    </navigator>
+                    <navigator url="feedback" class="menu-item">
+                        <view class="menu-item-hd">
+                            <text class="icon icon-5"></text>
+                        </view>
+                        <view class="menu-item-bd">
+                            <view class="text" style="color:{{btncolor}}">投诉申告</view>
+                            <view class="desc">填写您的投诉信息并提交</view>
+                        </view>
+                        <view class="menu-item-ft"></view>
+                    </navigator>
+                    <navigator url="smarthome" class="menu-item">
+                        <view class="menu-item-hd">
+                            <text class="icon icon-7"></text>
+                        </view>
+                        <view class="menu-item-bd">
+                            <view class="text" style="color:{{btncolor}}">智能家居</view>
+                            <view class="desc">智能家居实时信息查询</view>
+                        </view>
+                        <view class="menu-item-ft"></view>
+                    </navigator>
+                </view>
+            </view>
+        </view>
+
+        <view class="page-bar">
+            <view class="page-bar-item {{tab == 1 ? 'active' : ''}}" @tap="changeTab(1)">
+                <text class="icon icon-1"></text>
+                <text class="text" >物业</text>
+            </view>
+            <view class="page-bar-item {{tab == 2 ? 'active' : ''}}" @tap="changeTab(2)">
+                <text class="icon icon-2"></text>
+                <text class="text" >开门</text>
+            </view>
+            <view class="page-bar-item {{tab == 3 ? 'active' : ''}}" @tap="changeTab(3)">
+                <text class="icon icon-3"></text>
+                <text class="text" >我的</text>
+            </view>
+        </view>
+
+    <view @tap="hideDialog()" class="dialog-mod {{!showDialog ? 'hide' : ''}}">
+        <view class="mask"></view>
+        <view class="dialog">
+            <view class="dialog-bd">
+                <image class="loading {{!dialogLoading ? 'hide' : ''}}" src="../images/img-loading.gif"></image>
+                <image class="fail {{!dialogFail ? 'hide' : ''}}" src="../images/img-fail.png"></image>
+                <image class="success {{!dialogSuccess ? 'hide' : ''}}" src="../images/img-success.png"></image>
+            </view>
+        </view>
+    </view>
+    </view>
+
+</template>
+
+<script>
+    import wepy from 'wepy';
+    import {formatDate} from '../common/util';
+
+    let monthCn = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
+    let monthEn = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+    export default class Index extends wepy.page {
+        data = {
+            title: '' || '公告',
+            subtitle: '' || 'Notice',
+            tab: 1,
+            years: '2018',
+            monthCn: '十月',
+            monthEn: 'Oct',
+            day: '01',
+            token: '',
+            key_id:'',
+            showDialog: false,
+            dialogLoading: false,
+            dialogFail: false,
+            dialogSuccess: false,
+            templist: [],
+            tempindex: '',
+            keyList: [],
+            notice: '你们好!现本小区已进入装修阶段,进出苑区人员日益增多,管理处为加强小区人员进出管理,确保苑区的安全和谐,须对苑区住户办理业主卡,住户须凭业主卡进出苑区。请业主于近期内到管理处办理,谢谢合作!',
+            inputname: '',
+            inputtel: '',
+            inputtime:'',
+            btncolor:'',
+            iconimgUrl:'',
+            warning:''
+        };
+
+        components = {};
+        methods = {
+            changeTab(index) {
+                var self = this;
+                self.tab = index;
+                if (index == 2) {
+                    wx.request({
+                        url: 'https://api.yingtong-pm.cn/v1/client/takeOwnerUnlockingKey',
+                        method: 'GET',
+                        data: {
+                            token: self.token,
+                        },
+                        header: {
+                            "Content-Type": "application/json"
+                        },
+                        success: function (res) {
+                            var data = res.data;
+                            if (data.code == 200) {
+                                self.keyList = data.data;
+                                var a1 = self.keyList.length;
+                                self.templist = new Array(a1);
+                            }
+                            self.$apply();
+                        }
+                    });
+                }
+            },
+
+            hideDialog() {
+                if (!this.dialogLoading) {
+                    this.showDialog = false;
+                    this.dialogSuccess = false;
+                    this.dialogFail = false;
+                }
+            },
+            openDoor() {
+                var self = this;
+                self.showDialog = true;
+                self.dialogLoading = true;
+                wx.request({
+                    url: 'https://api.yingtong-pm.cn/v1/client/opendoor',
+                    method: 'POST',
+                    data: {
+                        token: self.token,
+                        key_id: self.key_id
+                    },
+                    header: {
+                        "Content-Type": "application/json"
+                    },
+                    success: function (res) {
+                        var data = res.data;
+                        if (data.code == 200) {
+                            self.dialogLoading = false;
+                            self.dialogSuccess = true;
+                            self.dialogFail = false;
+                        } else {
+                            self.dialogLoading = false;
+                            self.dialogFail = true;
+                            self.dialogSuccess = false;
+                        }
+                        self.$apply();
+                    }
+                });
+            },
+
+            opendoorvalidate(index) {
+
+
+                if(this.tempindex != index){
+                    this.templist = new Array(this.keyList.length);
+                }
+                if(this.templist[index] == -1){
+                    this.templist = new Array(this.keyList.length);
+
+                }else{
+                    this.templist[index] = -1;
+
+                }
+                this.tempindex = index;
+                // console.log(this.keyList[this.tempindex].key_id);
+                this.key_id=this.keyList[this.tempindex].key_id;
+            },
+            inputname(e) {
+                this.inputname = e.detail.value.replace(/[^A-Za-z0-9\u4e00-\u9fa5]+$/, '');
+                return this.inputname;
+            },
+            inputtel(e) {
+                this.inputtel = e.detail.value.replace(/[^0-9]/, '');
+                return this.inputtel;
+            },
+            inputtime(e) {
+                this.inputtime = e.detail.value.replace(/[^0-9]/, '');
+                return this.inputtime;
+            },
+            newopendoor: function () {
+                this.setData({
+                    showModal: true
+                })
+            },
+            /**
+             * 弹出框蒙层截断touchmove事件
+             */
+            preventTouchMove: function () {
+            },
+            /**
+             * 隐藏模态对话框
+             */
+            hideModal: function () {
+                this.setData({
+                    showModal: false
+                });
+            },
+            /**
+             * 对话框取消按钮点击事件
+             */
+            onCancel: function () {
+                this.setData({
+                    showModal: false
+                });
+            },
+            /**
+             * 对话框确认按钮点击事件
+             */
+            onConfirm: function () {
+                let tel = /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/;
+                let strtel = tel.test(this.inputtel);
+                let _this = this;
+                if(!_this.inputname)
+                {
+                    _this.warning="姓名不能为空!";
+                    return;
+                }else if(!_this.inputtel){
+                    _this.warning="手机号不能为空!";
+                    return;
+                }else if(!strtel){
+                    _this.warning="手机号格式不正确!";
+                    return;
+                }else if(!_this.inputtime){
+                    _this.warning="授权时长不能为空!";
+                    return;
+                }else if(_this.inputtime<1){
+                    _this.warning="授权时长不能小于1小时!";
+                    return;
+                }else {
+                    _this.warning=""
+                };
+                console.log(_this.token);
+                console.log(_this.key_id);
+                console.log(_this.inputname);
+                console.log(_this.inputtel);
+                console.log(_this.inputtime);
+                wx.request({
+                    url:'https://api.yingtong-pm.cn/v1/client/sendAuthorization',
+                    data:{
+                        token:_this.token,
+                        key_id:_this.key_id,
+                        username:_this.inputname,
+                        phone:_this.inputtel,
+                        time:_this.inputtime
+                    },
+                    method:'POST',
+                    header:{
+                        "Content-Type": "application/json"
+                    },
+                    success:function (res) {
+                        let data = res.data;
+
+                        if(data.code==200){
+
+                            _this.setData({
+                                showModal: false
+                            });
+                            wx.showToast({
+                                title: '成功失败',
+                                icon:'success',
+                                duration:3000
+                            })
+                        }else {
+                            wx.showToast({
+                                title: '授权失败',
+                                icon:'success',
+                                duration:3000
+                            })
+                        }
+
+                    }
+                })
+
+            },
+        };
+        onLoad() {
+            var self = this;
+            wx.getStorage({
+                key: 'token',
+
+                success: function (res) {
+                    let token = self.token = res.data;
+                    wx.request({
+                        url: 'https://api.yingtong-pm.cn/v1/client/checklogin',
+                        method: 'GET',
+                        data: {
+                            token: token,
+                        },
+
+
+                        header: {
+                            "Content-Type": "application/json"
+                        },
+                        success: function (res) {
+                            var data = res.data;
+
+                            if (data.code != 200) {
+                                wx.redirectTo({
+                                    url: 'login?page=index'
+                                });
+                            } else {
+                                wx.request({
+                                    url: 'https://api.yingtong-pm.cn/v1/client/takeNotice',
+                                    method: 'GET',
+                                    data: {
+                                        token: token
+                                    },
+                                    header: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    success: function (res) {
+                                        let data = res.data;
+                                        let date = formatDate.call(new Date(), 'yyyy-M-dd');
+                                        let dateArray = date.split('-');
+                                        let monthIndex = parseInt(dateArray[1]) - 1;
+                                        if (data.code == 200) {
+                                            self.title = data.data.title;
+                                            self.subtitle = data.data.subtitle;
+                                            self.notice = data.data.content;
+                                        }
+                                        self.years = dateArray[0];
+                                        self.day = dateArray[2];
+                                        self.monthCn = monthCn[monthIndex];
+                                        self.monthEn = monthEn[monthIndex];
+                                        self.$apply();
+                                    }
+                                });
+                            }
+                        }
+                    });
+                },
+                fail: function () {
+                    wx.redirectTo({
+                        url: 'login?page=index'
+                    });
+                },
+            });
+            wx.getStorage({
+                key: 'btncolor',
+                success: function (res) {
+                    let btncolor = self.btncolor = res.data;
+                }
+            });
+            wx.getStorage({
+                key: 'iconimgUrl',
+                success: function (res) {
+                    let iconimgUrl = self.iconimgUrl = res.data;
+                }
+            });
+
+        };
+
+
+    }
+
+</script>

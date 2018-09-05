@@ -1,0 +1,41 @@
+
+    <view class="page">
+
+        <image class="page-bg"  wx:if="{{ bg_imgUrl }}" src="{{ bg_imgUrl }}"/>
+
+        <view class="page-panel">
+            <image  wx:if="{{ imgUrl }}" src="{{imgUrl}}" class="page-panel-logo"/>
+            <view class="page-panel-label">
+                <view class="hd">
+                    <text class="icon icon-1"/>
+                </view>
+                <view class="bd">
+                    <view class="bd-title" style="color:{{btncolor}}">账号</view>
+                    <input type="number" bindinput="usernameInput" value="{{inputtext}}" class="bd-input" placeholder-class="bd-input__placeholder" placeholder="请输入账号" maxlength="11" style="color:{{btncolor}}"/>
+                </view>
+                <view class="ft">
+                    <text class="icon icon-1" bindtap="icon_clear"/>
+                </view>
+            </view>
+            <view class="page-panel-label">
+                <view class="hd">
+                    <text class="icon icon-2"/>
+                </view>
+                <view class="bd">
+                    <view class="bd-title" style="color:{{btncolor}}">密码</view>
+                    <input type="{{pass}}" bindinput="passwordInput" value="{{inputpass}}" class="bd-input" placeholder-class="bd-input__placeholder" placeholder="请输入密码" maxlength="18"/>
+                </view>
+                <view class="ft">
+                    <text class="{{replace_icon}}" bindtap="hidepassword"/>
+                </view>
+            </view>
+            <view class="page-panel-warning">{{warning}}</view>
+            <button bindtap="login" class="page-panel-btn" style="background-color:{{btncolor}}">登陆</button>
+            <navigator url="userregister" class="page-panel-nav">
+            <view class="page-panel-login">用户注册</view>
+            </navigator>
+            <navigator url="forget-pass" class="page-panel-na">
+            <view class="page-panel-forget">忘记密码</view>
+            </navigator>
+        </view>
+    </view>

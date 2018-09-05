@@ -1,0 +1,65 @@
+
+    <view class="page">
+        <view class="page-before" style="background-color:{{btncolor}}"/>
+        <view class="page-panel">
+        <view class="page-panel-bd">
+            <view class="menu">
+                <navigator url="powerrate-record" class="menu-item">
+                    <view class="menu-item-hd">
+                        <text class="icon icon-1"/>
+                    </view>
+                    <view class="menu-item-bd">
+                        <view class="text" style="color:{{btncolor}}">电表记录</view>
+                        <view class="desc">查询用户电量使用信息</view>
+                    </view>
+                    <view class="menu-item-ft"/>
+                </navigator>
+                <navigator url="water-record" class="menu-item">
+                    <view class="menu-item-hd">
+                        <text class="icon icon-2"/>
+                    </view>
+                    <view class="menu-item-bd">
+                        <view class="text" style="color:{{btncolor}}">水表记录</view>
+                        <view class="desc">查询用户水量使用信息</view>
+                    </view>
+                    <view class="menu-item-ft"/>
+                </navigator>
+                <navigator url="smoke-record" class="menu-item">
+                    <view class="menu-item-hd">
+                        <text class="icon icon-3"/>
+                    </view>
+                    <view class="menu-item-bd">
+                        <view class="text" style="color:{{btncolor}}">烟感记录</view>
+                        <view class="desc">查询室内烟感警示信息</view>
+                    </view>
+                    <view class="menu-item-ft"/>
+                </navigator>
+
+
+            </view>
+        </view>
+        </view>
+        <view class="modal-mask" catchtouchmove="preventTouchMove"  wx:if="{{showModal}}"/>
+        <view class="modal-dialog"  wx:if="{{showModal}}">
+            <view class="modal-title">输入用户信息</view>
+
+            <view class="modal-content">
+                <view class="modal-input-1">
+                    <input placeholder-class="input-holder" type="text" maxlength="11" bindinput="inputname" class="input-1" placeholder="请输入账号"/>
+
+                </view>
+                <view class="modal-input-2">
+                    <input placeholder-class="input-holder" type="tel" maxlength="18" bindinput="inputpas" class="input-2" placeholder="请输入密码"/>
+
+                </view>
+                <view class="modal-input-2">
+                    <input placeholder-class="input-holder" type="text" maxlength="11" bindinput="inputtime" class="input-2" placeholder="请输入授权时长（默认为24小时）"/>
+
+                </view>
+            </view>
+            <view class="modal-footer">
+                <view class="btn-cancel" bindtap="onCancel" data-status="cancel">取消</view>
+                <view class="btn-confirm" bindtap="onConfirm" data-status="confirm" style="color:{{btncolor}}">确定</view>
+            </view>
+        </view>
+    </view>

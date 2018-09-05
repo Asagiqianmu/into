@@ -1,0 +1,322 @@
+<style type="less" src="../styles/record.less"></style>
+
+<template>
+    <view class="page">
+        <view class="page-nav">
+            <view @tap="handleCalendar" data-handle="prev" class="page-nav-item">前一天</view>
+            <view @tap="chooseYearAndMonth" class="page-nav-item current" style="color:{{btncolor}}">{{cur_year ||
+                "2017"}} - {{cur_month || "1"}} - {{cur_day || "1"}}
+            </view>
+            <view @tap="handleCalendar" data-handle="next" class="page-nav-item">后一天</view>
+        </view>
+        <view wx:if="{{showCalendar}}" class="calendar">
+            <view class="box box-tb">
+                <view class="weeks box box-lr box-pack-center box-align-center">
+                    <view class="flex week fs28" wx:for="{{weeks_ch}}" wx:key="{{index}}" data-idx="{{index}}">
+                        {{item}}
+                    </view>
+                </view>
+                <view class="days box box-lr box-wrap">
+                    <view wx:if="{{hasEmptyGrid}}" class="grid white-color box box-align-center box-pack-center"
+                          wx:for="{{empytGrids}}" wx:key="{{index}}" data-idx="{{index}}">
+                    </view>
+                    <view class="grid white-color box box-align-center box-pack-center" wx:for="{{days}}"
+                          wx:key="{{index}}" data-idx="{{index}}" @tap="tapDayItem">
+                        <view class="day {{item.choosed ? 'border-radius pink-bg' : ''}}" style="background-color:{{btncolor}}">{{item.day}}</view>
+                    </view>
+                </view>
+            </view>
+        </view>
+        <view class="page-timeline">
+            <view class="page-timeline-item" wx:for="{{list}}" wx:key="{{index}}">
+                <view class="page-timeline-item-bd">
+                    <text class="icon"></text>
+                    <text class="text" style="color:{{btncolor}}">{{item.keyname}}</text>
+                    <view class="textin" style="color:{{btncolor}}">
+                        <view class="tx_uerinfo" style="color:{{btncolor}}">{{item.iswho}}</view>
+                        <view class="tx_openstyle" style="color:{{btncolor}}">{{item.style}}</view>
+                    </view>
+
+                </view>
+
+                <view class="page-timeline-item-ft">
+                    <text class="icon"></text>
+                    <text class="text" style="color:{{btncolor}}">{{item.time}}</text>
+                    <text class="status {{item.isopen == 2 ? 'status-success' : 'status-fail'}}">{{item.isopen == 2 ?
+                        '成功' : '失败'}}
+                    </text>
+                </view>
+            </view>
+        </view>
+        <view wx:if="{{showPicker}}" class="picker box box-tb">
+            <view class="picker-btns box box-lr box-pack-between box-align-center">
+                <view class="picker-btn picker-cancel" data-type="cancel" @tap="tapPickerBtnc">取消</view>
+                <view class="picker-btn picker-confirm" data-type="confirm" @tap="tapPickerBtn">确定</view>
+            </view>
+            <picker-view class="flex picker-view" value="{{picker_value}}" @change="pickerChange">
+                <picker-view-column>
+                    <view class="picker-view-column" wx:for="{{picker_year}}">{{item}}年</view>
+                </picker-view-column>
+                <picker-view-column>
+                    <view class="picker-view-column" wx:for="{{picker_month}}">{{item}}月</view>
+                </picker-view-column>
+            </picker-view>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    import {formatDate} from '../common/util'
+
+    let choose_year = null,
+        choose_month = null;
+    export default class OpenRecord extends wepy.page {
+        data = {
+            list: [],
+            datetime: formatDate.call(new Date(), 'yyyy-MM-dd'),
+            showPicker: false,
+            showCalendar: false,
+            picker_value: [],
+            picker_year: [],
+            picker_month: [],
+            cur_year: '',
+            cur_month: '',
+            cur_day: '',
+            weeks_ch: [],
+            days: [],
+            hasEmptyGrid: false,
+            empytGrids: true,
+            btncolor: '',
+        };
+        components = {};
+        methods = {
+            handleCalendar(e) {
+                const handle = e.currentTarget.dataset.handle;
+                const cur_year = this.cur_year;
+                const cur_month = this.cur_month;
+                const cur_day = this.cur_day;
+                let newMonth;
+                let newYear;
+                let newDay;
+                if (handle === 'prev') {
+                    newDay = cur_day - 1;
+                    newMonth = cur_month;
+                    newYear = cur_year;
+                    if (newDay < 1) {
+                        newMonth = cur_month - 1;
+                        this.calculateDays(newYear, newMonth);
+                        newDay = this.days[this.days.length - 1].day;
+                        if (newMonth < 1) {
+                            newYear = cur_year - 1;
+                            newMonth = 12;
+                        }
+                    }
+                } else {
+                    newDay = cur_day + 1;
+                    newMonth = cur_month;
+                    newYear = cur_year;
+                    if (newDay > this.days.length) {
+                        newMonth = cur_month + 1;
+                        newDay = 1;
+                        if (newMonth > 12) {
+                            newYear = cur_year + 1;
+                            newMonth = 1;
+                        }
+                    }
+                }
+                this.calculateDays(newYear, newMonth);
+                this.calculateEmptyGrids(newYear, newMonth);
+                this.cur_year = newYear;
+                this.cur_month = newMonth;
+                this.cur_day = newDay;
+                this.getOpenRecord();
+
+
+            },
+            tapDayItem(e) {
+                const idx = e.currentTarget.dataset.idx;
+                const days = this.days;
+                for (var i = 0; i < days.length; i++) {
+                    days[i].choosed = false;
+                }
+                days[idx].choosed = !days[idx].choosed;
+                this.days = days;
+                this.cur_day = days[idx].day;
+                this.showCalendar = false;
+                this.getOpenRecord();
+            },
+            chooseYearAndMonth() {
+                const cur_year = this.cur_year;
+                const cur_month = this.cur_month;
+                let picker_year = [],
+                    picker_month = [];
+                for (let i = 1970; i <= 2100; i++) {
+                    picker_year.push(i);
+                }
+                for (let i = 1; i <= 12; i++) {
+                    picker_month.push(i);
+                }
+                const idx_year = picker_year.indexOf(cur_year);
+                const idx_month = picker_month.indexOf(cur_month);
+                this.picker_value = [idx_year, idx_month];
+                this.picker_year = picker_year;
+                this.picker_month = picker_month;
+                this.showPicker = true;
+            },
+            pickerChange(e) {
+                const val = e.detail.value;
+                choose_year = this.picker_year[val[0]];
+                choose_month = this.picker_month[val[1]];
+            },
+            tapPickerBtn(e) {
+                const type = e.currentTarget.dataset.type;
+                this.showPicker = false;
+                if (type === 'confirm') {
+                    this.cur_year = choose_year;
+                    this.cur_month = choose_month;
+                    this.calculateEmptyGrids(choose_year, choose_month);
+                    this.calculateDays(choose_year, choose_month);
+                }
+                this.showCalendar = true;
+                this.$apply();
+
+            },
+            tapPickerBtnc(){
+                this.showCalendar = false;
+                this.showPicker = false;
+            }
+        };
+
+        getThisMonthDays(year, month) {
+            return new Date(year, month, 0).getDate();
+        }
+
+        getFirstDayOfWeek(year, month) {
+            return new Date(Date.UTC(year, month - 1, 1)).getDay();
+        }
+
+        calculateEmptyGrids(year, month) {
+            const firstDayOfWeek = this.getFirstDayOfWeek(year, month);
+            let empytGrids = [];
+            if (firstDayOfWeek > 0) {
+                for (let i = 0; i < firstDayOfWeek; i++) {
+                    empytGrids.push(i);
+                }
+                this.hasEmptyGrid = true;
+                this.empytGrids = empytGrids;
+            } else {
+                this.hasEmptyGrid = false;
+                this.empytGrids = [];
+            }
+        }
+
+        calculateDays(year, month) {
+            let days = [];
+            const thisMonthDays = this.getThisMonthDays(year, month);
+            for (let i = 1; i <= thisMonthDays; i++) {
+                days.push({
+                    day: i,
+                    choosed: false
+                });
+            }
+            this.days = days;
+        }
+
+        initCalendar() {
+            const date = new Date();
+            const cur_year = date.getFullYear();
+            const cur_month = date.getMonth() + 1;
+            const cur_day = date.getDate();
+            const weeks_ch = ['日', '一', '二', '三', '四', '五', '六'];
+            this.calculateEmptyGrids(cur_year, cur_month);
+            this.calculateDays(cur_year, cur_month);
+            this.cur_year = cur_year;
+            this.cur_month = cur_month;
+            this.cur_day = cur_day;
+            this.weeks_ch = weeks_ch;
+        }
+
+        getOpenRecord() {
+            let self = this;
+
+            wx.getStorage({
+                key: 'token',
+                success: function (res) {
+                    let token = res.data;
+                    wx.request({
+                        url: 'https://api.yingtong-pm.cn/v1/client/checklogin',
+                        method: 'GET',
+                        data: {
+                            token: token
+                        },
+                        header: {
+                            "Content-Type": "application/json"
+                        },
+                        success: function (res) {
+                            var data = res.data;
+                            if (data.code != 200) {
+                                wx.redirectTo({
+                                    url: 'login?page=open-record'
+                                });
+                            } else {
+                                wx.request({
+                                    url: 'https://api.yingtong-pm.cn/v1/client/takeOpenDoorRecord',
+                                    method: 'GET',
+                                    data: {
+                                        token: token,
+                                        datetime: self.cur_year + '-' + self.cur_month + '-' + self.cur_day
+                                    },
+                                    header: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    success: function (res) {
+                                        var data = res.data;
+                                        self.list = [];
+                                        if (data.code == 200) {
+                                            self.flag = 0;
+                                            for (var i = 0; i < data.data.length; i++) {
+                                                let obj = {};
+                                                obj.time = formatDate.call(new Date(data.data[i].createtime.time), 'hh:mm');
+                                                obj.keyname = data.data[i].keyname;
+                                                obj.isopen = data.data[i].isopen;
+                                                obj.style = data.data[i].style;
+                                                obj.iswho = data.data[i].iswho;
+                                                self.list.push(obj);
+                                                self.$apply();
+                                            }
+
+                                        }else{
+                                            self.$apply();
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    });
+                },
+                fail: function () {
+                    wx.redirectTo({
+                        url: 'login?page=open-record'
+                    });
+                }
+            });
+
+
+
+        }
+
+        onLoad() {
+            this.initCalendar();
+            this.getOpenRecord();
+
+            let self = this;
+            wx.getStorage({
+                key: 'btncolor',
+                success: function (res) {
+                    let btncolor = self.btncolor = res.data;
+                }
+            })
+        };
+        }
+</script>

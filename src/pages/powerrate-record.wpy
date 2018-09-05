@@ -1,0 +1,237 @@
+<style type="less" src="../styles/record.less"></style>
+
+<template>
+    <view class="page">
+        <view class="page-nav">
+            <view @tap="handleCalendar" data-handle="prev" class="page-nav-item">前一月</view>
+            <view @tap="chooseYearAndMonth" class="page-nav-item current" style="color:{{btncolor}}">{{cur_year ||
+                "2017"}} - {{cur_month || "1"}}
+            </view>
+            <view @tap="handleCalendar" data-handle="next" class="page-nav-item">后一月</view>
+        </view>
+        <view class="page-timeline">
+            <view class="page-timeline-item" wx:for="{{list}}" wx:key="{{index}}">
+                <view class="page-timeline-item-bd">
+
+                    <text class="text" style="color:{{btncolor}}">门牌号:{{item.houseid}}</text>
+                    <text class="text" style="color:{{btncolor}};float:left">使用电量:{{item.use_count}}度</text>
+
+                </view>
+
+                <view class="page-timeline-item-ft">
+                    <text class="icon"></text>
+                    <text class="text" style="color:{{btncolor}}">{{item.time}}</text>
+                </view>
+            </view>
+        </view>
+        <view wx:if="{{showPicker}}" class="picker box box-tb">
+            <view class="picker-btns box box-lr box-pack-between box-align-center">
+                <view class="picker-btn picker-cancel" data-type="cancel" @tap="tapPickerBtnc">取消</view>
+                <view class="picker-btn picker-confirm" data-type="confirm" @tap="tapPickerBtn">确定</view>
+            </view>
+            <picker-view class="flex picker-view" value="{{picker_value}}" @change="pickerChange">
+                <picker-view-column>
+                    <view class="picker-view-column" wx:for="{{picker_year}}">{{item}}年</view>
+                </picker-view-column>
+                <picker-view-column>
+                    <view class="picker-view-column" wx:for="{{picker_month}}">{{item}}月</view>
+                </picker-view-column>
+            </picker-view>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    import {formatDate} from '../common/util'
+
+    let choose_year = null,
+        choose_month = null;
+    export default class PowerRateRecord extends wepy.page {
+        data = {
+            list: [],
+            datetime: formatDate.call(new Date(), 'yyyy-MM-dd'),
+            showPicker: false,
+            picker_value: [],
+            picker_year: [],
+            picker_month: [],
+            cur_year: '',
+            cur_month: '',
+            hasEmptyGrid: false,
+            empytGrids: true,
+            btncolor: ''
+        };
+        components = {};
+        methods = {
+            handleCalendar(e) {
+                const handle = e.currentTarget.dataset.handle;
+                const cur_year = this.cur_year;
+                const cur_month = this.cur_month;
+                let newMonth;
+                let newYear;
+
+                if (handle === 'prev') {
+                    newMonth = cur_month;
+                    newYear = cur_year;
+                    newMonth = cur_month - 1;
+                    if (newMonth < 1) {
+                        newYear = cur_year - 1;
+                        newMonth = 12;
+                    }
+
+                } else {
+                    newMonth = cur_month;
+                    newYear = cur_year;
+
+                    newMonth = cur_month + 1;
+                    if (newMonth > 12) {
+                        newYear = cur_year + 1;
+                        newMonth = 1;
+                    }
+
+                }
+                this.calculateEmptyGrids(newYear, newMonth);
+                this.cur_year = newYear;
+                this.cur_month = newMonth;
+            },
+            chooseYearAndMonth() {
+                const cur_year = this.cur_year;
+                const cur_month = this.cur_month;
+                let picker_year = [],
+                    picker_month = [];
+                for (let i = 1970; i <= 2100; i++) {
+                    picker_year.push(i);
+                }
+                for (let i = 1; i <= 12; i++) {
+                    picker_month.push(i);
+                }
+                const idx_year = picker_year.indexOf(cur_year);
+                const idx_month = picker_month.indexOf(cur_month);
+                this.picker_value = [idx_year, idx_month];
+                this.picker_year = picker_year;
+                this.picker_month = picker_month;
+                this.showPicker = true;
+            },
+            pickerChange(e) {
+                const val = e.detail.value;
+                choose_year = this.picker_year[val[0]];
+                choose_month = this.picker_month[val[1]];
+            },
+            tapPickerBtn(e) {
+                const type = e.currentTarget.dataset.type;
+                this.showPicker = false;
+                if (type === 'confirm') {
+                    this.cur_year = choose_year;
+                    this.cur_month = choose_month;
+                    this.calculateEmptyGrids(choose_year, choose_month);
+                }
+            },
+        };
+
+        getFirstDayOfWeek(year, month) {
+            return new Date(Date.UTC(year, month - 1, 1)).getDay();
+        }
+
+        calculateEmptyGrids(year, month) {
+            const firstDayOfWeek = this.getFirstDayOfWeek(year, month);
+            let empytGrids = [];
+            if (firstDayOfWeek > 0) {
+                for (let i = 0; i < firstDayOfWeek; i++) {
+                    empytGrids.push(i);
+                }
+                this.hasEmptyGrid = true;
+                this.empytGrids = empytGrids;
+            } else {
+                this.hasEmptyGrid = false;
+                this.empytGrids = [];
+            }
+        }
+
+        initCalendar() {
+            const date = new Date();
+            const cur_year = date.getFullYear();
+            const cur_month = date.getMonth() + 1;
+            this.calculateEmptyGrids(cur_year, cur_month);
+            this.cur_year = cur_year;
+            this.cur_month = cur_month;
+        }
+
+        getPowerRecord() {
+            var self = this;
+
+            wx.getStorage({
+                key: 'token',
+                success: function (res) {
+                    let token = res.data;
+                    wx.request({
+                        url: 'https://api.yingtong-pm.cn/v1/client/checklogin',
+                        method: 'GET',
+                        data: {
+                            token: token,
+                        },
+                        success: function (res) {
+                            var data = res.data;
+                            if (data.code != 200) {
+                                wx.redirectTo({
+                                    url: 'login?page=powerrate-record'
+                                });
+                            } else {
+                                wx.request({
+                                    url: 'https://api.yingtong-pm.cn/v1/client/waterelectricity',
+                                    method: 'GET',
+                                    data: {
+                                        type:'2',
+                                        token: token,
+                                        year_mounth: self.cur_year + '-' + self.cur_month
+                                    },
+                                    header: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    success: function (res) {
+                                        var data = res.data;
+                                        self.list = [];
+                                        if (data.code == 200) {
+                                            for (var i = 0; i < data.data.length; i++) {
+                                                let obj = {};
+                                                obj.houseid = data.data[i].houseId;
+                                                obj.time = data.data[i].readtime;
+                                                obj.use_count = data.data[i].use_count;
+                                                self.list.push(obj);
+                                                self.$apply();
+                                            }
+
+                                        }else {
+                                            self.$apply();
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    });
+                },
+                fail: function () {
+                    wx.redirectTo({
+                        url: 'login?page=powerrate-record'
+                    });
+                }
+            });
+
+
+
+        }
+
+        onLoad() {
+            this.initCalendar();
+            this.getPowerRecord();
+
+            var self = this;
+
+            wx.getStorage({
+                key: 'btncolor',
+                success: function (res) {
+                    let btncolor = self.btncolor = res.data;
+                }
+            })
+        };
+    }
+</script>

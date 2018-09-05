@@ -1,0 +1,124 @@
+<style type="less" src="../styles/feedback.less"></style>
+
+
+<template>
+  <view class="page">
+    <view class="page-before" style="background-color:{{btncolor}}"></view>
+    <view class="page-panel">
+      <textarea class="page-panel-textarea" @input="changeContent" maxlength="1000" placeholder-class="page-panel-textarea__placeholder" placeholder="填写申诉内容"></textarea>
+    </view>
+    <input type="number" class="page-input" @input="telphone" placeholder="联系方式" placeholder-class="page-input__placeholder" maxlength="11"></input>
+    <view class="page-err">{{warning}}</view>
+    <button @tap="feedback" class="page-btn" style="background-color:{{btncolor}}">提交</button>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  export default class Feedback extends wepy.page {
+      data = {
+          token: '',
+          content: '',
+          telphone: '',
+          btncolor: '',
+          warning:''
+    };
+    components = {};
+    methods = {
+      changeContent(e){
+        this.content = e.detail.value;
+        return this.content;
+      },
+      telphone(e){
+          this.telphone = e.detail.value.replace(/\D/g,'');
+          return this.telphone;
+      },
+      feedback(){
+          let tel = /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/;
+          let strtel = tel.test(this.telphone);
+          let self = this;
+          if (!self.content) {
+            self.warning="请输入申诉内容!";
+            return;
+          } else if (!self.telphone) {
+            self.warning="请输入手机号!";
+            return;
+          }else if (!strtel) {
+            self.warning="手机号格式不正确!";
+            return;
+          } else {
+            wx.request({
+              url: 'https://api.yingtong-pm.cn/v1/client/feedback',
+              method: 'POST',
+              data: {
+                token: self.token,
+                content: self.content,
+                telphone: self.telphone
+              },
+              header: {
+                "Content-Type": "application/json"
+              },
+              success: function (res) {
+                var data = res.data;
+                if (data.code == 200) {
+                  wx.showToast({
+                    title: data.msg,
+                    icon: 'success',
+                    duration: 2000,
+                    complete: function () {
+                      setTimeout(function () {
+                        wx.redirectTo({
+                          url: 'index'
+                        });
+                      }, 2000);
+                    }
+                  });
+                }
+              }
+            });
+          }
+        }
+     };
+
+    onLoad() {
+      let self = this;
+      wx.getStorage({
+        key: 'token',
+        success: function (res) {
+          let token = self.token = res.data;
+          wx.request({
+            url: 'https://api.yingtong-pm.cn/v1/client/checklogin',
+            method: 'GET',
+            data: {
+              token: token
+            },
+            header: {
+              "Content-Type": "application/json"
+            },
+            success: function (res) {
+              var data = res.data;
+              if (data.code != 200) {
+                wx.redirectTo({
+                  url: 'login?page=feedback'
+                });
+              }
+            }
+          });
+        },
+        fail: function () {
+          wx.redirectTo({
+            url: 'login?page=feedback'
+          });
+        }
+      });
+
+        wx.getStorage({
+            key: 'btncolor',
+            success: function (res) {
+                let btncolor = self.btncolor = res.data;
+            }
+        })
+
+    };
+  }
+</script>

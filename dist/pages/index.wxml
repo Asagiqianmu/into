@@ -1,0 +1,190 @@
+
+    <view class="page">
+        <view class="page-before" style="background-color:{{btncolor}}"/>
+        <view class="page-panel" hidden="{{tab != 1}}">
+            <view class="page-panel-hd">
+                <view class="date">
+                    <view class="date-day" style="color:{{btncolor}}">{{day}}</view>
+                    <view class="date-mouth">
+                        <view class="date-mouth-cn" style="color:{{btncolor}}"> {{monthCn}}</view>
+                        <view class="date-mouth-en">{{monthEn}}</view>
+                    </view>
+                </view>
+                <view class="years" style="color:{{btncolor}}">{{years}}</view>
+            </view>
+            <view class="page-panel-bd">
+                <view class="title">
+                    <view class="title-ch" style="color:{{btncolor}};border-bottom: {{btncolor}} solid 4rpx; ">{{title}}</view>
+                    <view class="title-en">{{subtitle}}</view>
+                </view>
+                <view class="notice">
+                    <view class="notice-title">尊敬的住户：</view>
+                    <view class="notice-desc">{{notice}}</view>
+                </view>
+                <view class="menu">
+                    <navigator url="payment" class="menu-item">
+                        <view class="menu-item-hd">
+                            <text class="icon icon-1"/>
+                        </view>
+                        <view class="menu-item-bd">
+                            <view class="text" style="color:{{btncolor}}">生活缴费</view>
+                            <view class="desc">各种生活费用缴纳，一键搞定</view>
+                        </view>
+                        <view class="menu-item-ft"/>
+                    </navigator>
+                    <navigator url="repair" class="menu-item">
+                        <view class="menu-item-hd">
+                            <text class="icon icon-2"/>
+                        </view>
+                        <view class="menu-item-bd">
+                            <view class="text" style="color:{{btncolor}}">居家维修</view>
+                            <view class="desc">日常居家维修联系，上门服务</view>
+                        </view>
+                        <view class="menu-item-ft"/>
+                    </navigator>
+                    <navigator url="information" class="menu-item">
+                        <view class="menu-item-hd">
+                            <text class="icon icon-3"/>
+                        </view>
+                        <view class="menu-item-bd">
+                            <view class="text" style="color:{{btncolor}}">便民信息</view>
+                            <view class="desc">物业便民联系热线，随时待命</view>
+                        </view>
+                        <view class="menu-item-ft"/>
+                    </navigator>
+                </view>
+            </view>
+        </view>
+        <view class="page-panel page-panel-2" hidden="{{tab != 2}}">
+            <view class="page-panel-bd">
+                <view class="title">
+                    <view class="title-ch" style="color:{{btncolor}}">选择钥匙</view>
+                    <view class="title-en">KEYS</view>
+                </view>
+                <view class="keys">
+                    <view  wx:for="{{keyList}}" wx:key="{{index}}" data-wpyopendoor-a="{{item.key_id}}">
+                        <view class="{{templist[index] != -1  ? 'keys-item':'kes-itm'}}" bindtap="opendoorvalidate" data-wpyopendoorvalidate-a="{{index}}">
+                        <view class="keys-item-hd" style="color:{{btncolor}}">钥匙{{item.key_id}}:</view>
+                        <view class="keys-item-bd">{{item.keyname}}</view>
+                        <view class="{{templist[index] != -1  ? 'keys-item-ft':'syft'}}"/>
+                        </view>
+                        <view class="keys-item-va" style="color:{{btncolor}}">
+                        <view calss="opendoor-validate" hidden="{{templist[index] != -1 ? true : false}}">
+                            <view class="opendoor-1" bindtap="openDoor" hidden="{{keyList[index].type != 2 ? false : true}}">一键开门</view>
+                            <view class="opendoor-2" bindtap="newopendoor" hidden="{{keyList[index].type != 1 ? false : true}}">远程授权</view>
+                        </view>
+                        </view>
+                    </view>
+                </view>
+
+
+
+                <view class="modal-mask" catchtouchmove="preventTouchMove"  wx:if="{{showModal}}"/>
+                <view class="modal-dialog" wx:if="{{showModal}}">
+                    <view class="modal-title">输入用户信息</view>
+
+                    <view class="modal-content">
+                        <view class="modal-input-1">
+                            <input placeholder-class="input-holder" type="text" maxlength="11" bindinput="inputname" class="input-1" placeholder="请输入姓名"/>
+
+                        </view>
+                        <view class="modal-input-2">
+                            <input placeholder-class="input-holder" type="number" maxlength="11" bindinput="inputtel" class="input-2" placeholder="请输入手机号"/>
+
+                        </view>
+                        <view class="modal-input-2">
+                            <input placeholder-class="input-holder" type="number" maxlength="3" bindinput="inputtime" class="input-2" placeholder="请输入授权时长（小时）"/>
+                        </view>
+                        <view class="modal-input-err">{{warning}}</view>
+                    </view>
+                    <view class="modal-footer">
+                        <view class="btn-cancel" bindtap="onCancel" data-status="cancel">取消</view>
+                        <view class="btn-confirm" bindtap="onConfirm" data-status="confirm" style="color:{{btncolor}}">确定</view>
+                    </view>
+                </view>
+            </view>
+
+        </view>
+        <view class="page-panel page-panel-3" hidden="{{tab != 3}}">
+            <view class="page-panel-bd">
+                <view class="menu">
+                    <navigator url="setpass" class="menu-item">
+                        <view class="menu-item-hd">
+                            <text class="icon icon-6"/>
+                        </view>
+                        <view class="menu-item-bd">
+                            <view class="text" style="color:{{btncolor}}">修改密码</view>
+                            <view class="desc">修改用户登陆密码</view>
+                        </view>
+                        <view class="menu-item-ft"/>
+                    </navigator>
+                    <navigator url="open-record" class="menu-item">
+                        <view class="menu-item-hd">
+                            <text class="icon icon-4"/>
+                        </view>
+                        <view class="menu-item-bd">
+                            <view class="text" style="color:{{btncolor}}">开门记录</view>
+                            <view class="desc">开门时间具体信息查询</view>
+                        </view>
+                        <view class="menu-item-ft"/>
+                    </navigator>
+                    <navigator url="payment-record" class="menu-item">
+                        <view class="menu-item-hd">
+                            <text class="icon icon-1"/>
+                        </view>
+                        <view class="menu-item-bd">
+                            <view class="text" style="color:{{btncolor}}">缴费记录</view>
+                            <view class="desc">日常生活缴费信息查询</view>
+                        </view>
+                        <view class="menu-item-ft"/>
+                    </navigator>
+                    <navigator url="feedback" class="menu-item">
+                        <view class="menu-item-hd">
+                            <text class="icon icon-5"/>
+                        </view>
+                        <view class="menu-item-bd">
+                            <view class="text" style="color:{{btncolor}}">投诉申告</view>
+                            <view class="desc">填写您的投诉信息并提交</view>
+                        </view>
+                        <view class="menu-item-ft"/>
+                    </navigator>
+                    <navigator url="smarthome" class="menu-item">
+                        <view class="menu-item-hd">
+                            <text class="icon icon-7"/>
+                        </view>
+                        <view class="menu-item-bd">
+                            <view class="text" style="color:{{btncolor}}">智能家居</view>
+                            <view class="desc">智能家居实时信息查询</view>
+                        </view>
+                        <view class="menu-item-ft"/>
+                    </navigator>
+                </view>
+            </view>
+        </view>
+
+        <view class="page-bar">
+            <view class="page-bar-item {{tab == 1 ? 'active' : ''}}" bindtap="changeTab" data-wpychangetab-a="1">
+                <text class="icon icon-1"/>
+                <text class="text">物业</text>
+            </view>
+            <view class="page-bar-item {{tab == 2 ? 'active' : ''}}" bindtap="changeTab" data-wpychangetab-a="2">
+                <text class="icon icon-2"/>
+                <text class="text">开门</text>
+            </view>
+            <view class="page-bar-item {{tab == 3 ? 'active' : ''}}" bindtap="changeTab" data-wpychangetab-a="3">
+                <text class="icon icon-3"/>
+                <text class="text">我的</text>
+            </view>
+        </view>
+
+    <view bindtap="hideDialog" class="dialog-mod {{!showDialog ? 'hide' : ''}}" data-wpyhidedialog-a="">
+        <view class="mask"/>
+        <view class="dialog">
+            <view class="dialog-bd">
+                <image class="loading {{!dialogLoading ? 'hide' : ''}}" src="../images/img-loading.gif"/>
+                <image class="fail {{!dialogFail ? 'hide' : ''}}" src="../images/img-fail.png"/>
+                <image class="success {{!dialogSuccess ? 'hide' : ''}}" src="../images/img-success.png"/>
+            </view>
+        </view>
+    </view>
+    </view>

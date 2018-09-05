@@ -1,0 +1,10 @@
+
+  <view class="page">
+    <view class="page-before" style="background-color:{{btncolor}}"/>
+    <view class="page-panel">
+      <textarea class="page-panel-textarea" bindinput="changeContent" maxlength="1000" placeholder-class="page-panel-textarea__placeholder" placeholder="填写申诉内容"/>
+    </view>
+    <input type="number" class="page-input" bindinput="telphone" placeholder="联系方式" placeholder-class="page-input__placeholder" maxlength="11"/>
+    <view class="page-err">{{warning}}</view>
+    <button bindtap="feedback" class="page-btn" style="background-color:{{btncolor}}">提交</button>
+  </view>

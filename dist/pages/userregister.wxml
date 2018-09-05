@@ -1,0 +1,65 @@
+
+    <vive class="page">
+        <view class="page-before" style="background-color:{{btncolor}}"/>
+        <view class="page-panel">
+            <view class="page-panel-bd">
+                <view style="color:{{btncolor}}" class="head">用户注册</view>
+                <view class="menu">
+                    <view class="menu-tl">
+                        <view style="color:{{btncolor}}">手机号:</view>
+                        <input maxlength="11" bindblur="mobileInputEvent" bindinput="telphone" class="menu-tl-in" type="number" placeholder="请输入手机号"/>
+                    </view>
+                    <view>
+                        <view style="color:{{btncolor}}">验证码:</view>
+                        <view class="menu-vc">
+                            <input maxlength="6" bindinput="vercode" class="menu-vc-in" type="number" placeholder="请输入验证码"/>
+                            <button value="获取验证" class="menu-vc-bt" style="color:white;background-color:{{btncolor}}" bindtap="getcode" disabled="{{buttonDisable}}">{{verifyCode}}</button>
+                        </view>
+                    </view>
+                    <view class="menu-pca">
+                        <view class="menu-pca-ve">{{areaInfo}}</view>
+                        <button class="menu-pca-bt" bindtap="selectDistrict" style="background-color:{{btncolor}}">选择城市</button>
+                    </view>
+                    <view class="menu-hd">
+                        <view style="color:{{btncolor}}">小区名称:</view>
+                        <input bindinput="dname" class="menu-hd-in" type="text" placeholder="请输入小区名称"/>
+                    </view>
+                    <view>
+                        <view style="color:{{btncolor}}">住址:</view>
+                        <view class="menu-add">
+                            <input bindinput="dong" value="{{clear}}" type="text" maxlength="4"/><span style="color:{{btncolor}}">栋</span>
+                            <input bindinput="zuo" value="{{clear}}" type="text" maxlength="4"/><span style="color:{{btncolor}}">座</span>
+                            <input bindinput="fang" value="{{clear}}" type="text" maxlength="6"/><span style="color:{{btncolor}}">房</span>
+                        </view>
+                    </view>
+                    <view class="menu-err">{{warning}}</view>
+                    <button class="menu-bt" style="background-color:{{btncolor}}" bindtap="submit">提交</button>
+
+                </view>
+            </view>
+        </view>
+        <view class="dialog-mask " style="z-index:11;visibility:{{addressMenuIsShow ? 'visible': 'hidden'}}" bindtap="hideCitySelected"/>
+        <!--城市三级联动-->
+        <!--使用动画时不能wx:if="{{city.length>0&&isVisible}}" ，不能hidden=''属性否则无动画效果-->
+        <view class="picker-view" animation="{{animationAddressMenu}}" style="visibility:{{addressMenuIsShow ? 'visible':'hidden'}}">
+            <view style="height:10% ;width:95%;margin-top:10px">
+                <text catchtap="cityCancel">取消</text>
+                <text style="float: right" catchtap="citySure">确定</text>
+            </view>
+            <!--"可以显示默认的城市，使用后级联选择城市反应很慢就不使用了-->
+            <picker-view style="width: 100%; height: 300px;" bindchange="cityChange" value="{{value}}"  wx:key="">
+                <picker-view-column>
+                    <view wx:for="{{provinces}}" class="picker-item">
+                        {{item.name}}</view>
+                </picker-view-column>
+                <picker-view-column>
+                    <view wx:for="{{citys}}" class="picker-item" wx:key="">
+                        {{item.name}}</view>
+                </picker-view-column>
+                <picker-view-column>
+                    <view wx:for="{{areas}}" class="picker-item" wx:key="">
+                        {{item.name}}</view>
+                </picker-view-column>
+            </picker-view>
+        </view>
+    </vive>

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="dm.par" name="unnamed">
+    <output-path>$PROJECT_DIR$/out/artifacts/unnamed</output-path>
+    <root id="archive" name="">
+      <element id="artifact" artifact-name="into" />
+    </root>
+  </artifact>
+</component>

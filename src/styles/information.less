@@ -1,0 +1,111 @@
+@rpx: 1rpx;
+@px2x: 2px;
+@sprites: "https://api.yingtong-pm.cn/images/commont/img001.png";
+.sprites(@y:0) {
+  background: url(@sprites) 0 @y no-repeat;
+  background-size: 130 / @px2x;
+}
+.page {
+  position: absolute;
+  width: 100%;
+  min-height: 100%;
+  background: #eaeaea;
+  &-before {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 146 / @rpx;
+  }
+  &-list {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 44 / @rpx;
+    padding: 0 2%;
+    margin-left: -2%;
+  }
+  &-item {
+    position: relative;
+    box-sizing: border-box;
+    height: 502 / @rpx;
+    width: 48%;
+    padding-top: 24 / @rpx;
+    margin-left: 2%;
+    margin-bottom: 2%;
+    background: #fff;
+    border-radius: 6 / @rpx;
+    .tag {
+      position: absolute;
+      left: -6 / @rpx;
+      top: 66 / @rpx;
+      width: 160 / @rpx;
+      height: 40 / @rpx;
+      text-align: center;
+      line-height: 40 / @rpx;
+      font-size: 28 / @rpx;
+      color: #ffffff;
+    }
+    .icon {
+      width: 130 / @px2x;
+      height: 130 / @px2x;
+      margin-left: 198 / @rpx;
+      margin-bottom: 4 / @rpx;
+      border-radius: 130 / @px2x;
+    }
+    .dl {
+      padding-left: 20 / @rpx;
+      margin-bottom: 34 / @rpx;
+      &-dt {
+        line-height: 44 / @rpx;
+        font-size: 30 / @rpx;
+        color: #666;
+      }
+      &-dd {
+        line-height: 30 / @rpx;
+        font-size: 24 /@rpx;
+        color: #999;
+      }
+    }
+    &-1 {
+      .tag{
+        background: #847ff8;
+      }
+      .icon{
+        .sprites(-432 / @rpx);
+      }
+    }
+    &-2 {
+      .tag{
+        background: #60a7ff;
+      }
+      .icon{
+        .sprites(-570 / @rpx);
+      }
+    }
+    &-3 {
+      .tag{
+        background: #11cda3;
+      }
+      .icon{
+        .sprites(-708 / @rpx);
+      }
+    }
+    &-4 {
+      .tag{
+        background: #f36666;
+      }
+      .icon{
+        .sprites(-846 / @rpx);
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 320px) {
+  .page-item{
+    .icon{
+      margin-left: 168 / @rpx;
+    }
+  }
+}

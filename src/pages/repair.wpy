@@ -1,0 +1,98 @@
+<style type="less" src="../styles/repair.less"></style>
+
+<template>
+  <view class="page">
+    <view class="page-list">
+      <view class="page-item" wx:for="{{list}}" wx:key="{{index}}" @tap="link({{item.id}})">
+        <view class="page-item-hd">
+          <image class="img" src="https://api.yingtong-pm.cn{{item.imageUrl}}"></image>
+        </view>
+        <view class="page-item-bd">
+          <text>{{item.mainBusiness}}</text>
+        </view>
+        <view class="page-item-ft">
+          <view class="name" style="color:{{btncolor}}">
+            <text>{{item.companyName}}</text>
+          </view>
+          <view class="contact">
+            <view>{{item.telephone}}</view>
+            <view>{{item.address}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  export default class Repair extends wepy.page {
+    data = {
+      list: [],
+        btncolor:''
+    };
+    components = {};
+    methods = {
+      link(id){
+        console.log(id);
+      }
+    };
+
+    onLoad() {
+      var self = this;
+      wx.getStorage({
+        key: 'token',
+        success: function (res) {
+          let token = res.data;
+          wx.request({
+            url: 'https://api.yingtong-pm.cn/v1/client/checklogin',
+            method: 'GET',
+            data: {
+              token: token
+            },
+            header: {
+              "Content-Type": "application/json"
+            },
+            success: function (res) {
+              var data = res.data;
+              if (data.code != 200) {
+                wx.redirectTo({
+                  url: 'login?page=repair'
+                });
+              } else {
+                wx.request({
+                  url: 'https://api.yingtong-pm.cn/v1/client/takeMaintenance',
+                  method: 'GET',
+                  data: {
+                    token: token
+                  },
+                  header: {
+                    "Content-Type": "application/json"
+                  },
+                  success: function (res) {
+                    var data = res.data;
+                    if (data.code == 200) {
+                      self.list = data.data;
+                    }
+                    self.$apply();
+                  }
+                });
+              }
+            }
+          });
+        },
+        fail: function () {
+          wx.redirectTo({
+            url: 'login?page=repair'
+          });
+        }
+      });
+        wx.getStorage({
+            key: 'btncolor',
+            success: function (res) {
+                let btncolor = self.btncolor = res.data;
+            }
+        });
+    };
+  }
+</script>

@@ -1,0 +1,181 @@
+<style type="less" src="../styles/opendoor-validate.less"></style>
+
+<template>
+    <view class="page">
+
+        <view class="page-panel">
+            <view class="title">
+                <view class="title-door ">选择开门方式</view>
+                <view class="title-en">KEYS</view>
+            </view>
+            <view class=".choose-door">
+                <view class="opendoor-1" bindtap="openDoor">远程开门</view>
+
+                <view @tap="hideDialog()" class="dialog-mod {{!showDialog ? 'hide' : ''}}">
+                    <view class="mask"></view>
+                    <view class="dialog">
+                        <view class="dialog-bd">
+                            <image class="loading {{!dialogLoading ? 'hide' : ''}}"
+                                   src="../images/img-loading.gif"></image>
+                            <image class="fail {{!dialogFail ? 'hide' : ''}}" src="../images/img-fail.png"></image>
+                            <image class="success {{!dialogSuccess ? 'hide' : ''}}"
+                                   src="../images/img-success.png"></image>
+                        </view>
+                    </view>
+                </view>
+
+                <view class="opendoor-2" bindtap='newopendoor'>发送授权</view>
+
+            </view>
+            <view class="modal-mask" bindtap="hideModal" catchtouchmove="preventTouchMove"
+                  wx:if="{{showModal}}"></view>
+            <view class="modal-dialog" wx:if="{{showModal}}">
+                <view class="modal-title">输入用户信息</view>
+
+                <view class="modal-content">
+                    <view class="modal-input-1">
+                        <input placeholder-class="input-holder" type="text" maxlength="11" bindinput="inputChange"
+                               @input="inputname"
+                               class="input-1" placeholder="请输入账号"></input>
+
+                    </view>
+                    <view class="modal-input-2">
+                        <input placeholder-class="input-holder" type="tel" maxlength="18" bindinput="inputChange"
+                               @input="inputpas"
+                               class="input-2" placeholder="请输入密码"></input>
+
+                    </view>
+                    <view class="modal-input-2">
+                        <input placeholder-class="input-holder" type="text" maxlength="11" bindinput="inputChange"
+                               @input="inputtime"
+                               class="input-2" placeholder="请输入授权时长（默认为24小时）"></input>
+
+                    </view>
+                </view>
+                <view class="modal-footer">
+                    <view class="btn-cancel" bindtap="onCancel" data-status="cancel">取消</view>
+                    <view class="btn-confirm" bindtap="onConfirm" data-status="confirm">确定</view>
+                </view>
+            </view>
+
+        </view>
+    </view>
+
+</template>
+
+
+<script>
+    import wepy from 'wepy';
+
+    export default class OpendoorValidate extends wepy.page {
+        data = {
+            showDialog: false,
+            dialogLoading: false,
+            dialogFail: false,
+            dialogSuccess: false,
+            //showModal: false,
+            inputname: '',
+            inputpas: '',
+            inputtime:''
+        }
+        components = {};
+        methods = {
+
+            hideDialog() {
+                if (!this.dialogLoading) {
+                    this.showDialog = false;
+                    this.dialogSuccess = false;
+                    this.dialogFail = false;
+                }
+            },
+
+            openDoor(key_id) {
+                var self = this;
+                self.showDialog = true;
+                self.dialogLoading = true;
+                wx.request({
+                    url: 'https://api.yingtong-pm.cn/v1/client/opendoor',
+                    method: 'POST',
+                    data: {
+                        token: self.token,
+                        key_id: key_id
+                    },
+                    header: {
+                        "Content-Type": "application/json"
+                    },
+                    success: function (res) {
+                        var data = res.data;
+                        if (data.code == 200) {
+                            self.dialogLoading = false;
+                            self.dialogSuccess = true;
+                            self.dialogFail = false;
+                        } else {
+                            self.dialogLoading = false;
+                            self.dialogFail = true;
+                            self.dialogSuccess = false;
+                        }
+                        self.$apply();
+                    }
+                });
+            },
+            //     opendoorvalidate() {
+            //         wx.navigateTo({
+            //             url: '../pages/opendoor-validate'
+            //         })
+            //     }
+            // };
+            inputname(e) {
+                this.inputname = e.detail.value.replace(/\D/g, '');
+                return this.inputname;
+            },
+            inputpas(e) {
+                this.inputtel = e.detail.value.replace(/[\W]/g, '');
+                return this.inputtel;
+            },
+            inputtime(e) {
+                this.inputtime = e.detail.value.replace(/\D/g, '');
+                return this.inputtime;
+            },
+            newopendoor: function () {
+                this.setData({
+                    showModal: true
+                })
+            },
+            /**
+             * 弹出框蒙层截断touchmove事件
+             */
+            preventTouchMove: function () {
+            },
+            /**
+             * 隐藏模态对话框
+             */
+            hideModal: function () {
+                this.setData({
+                    showModal: false
+                });
+            },
+            /**
+             * 对话框取消按钮点击事件
+             */
+            onCancel: function () {
+                this.setData({
+                    showModal: false
+                });
+            },
+            /**
+             * 对话框确认按钮点击事件
+             */
+            onConfirm: function () {
+                this.setData({
+                    showModal: false
+                });
+            },
+
+
+            onload() {
+            },
+
+        };
+    };
+
+</script>

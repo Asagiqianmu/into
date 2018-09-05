@@ -1,0 +1,17 @@
+
+  <view class="page">
+    <view class="page-list">
+      <view class="page-item"  wx:for="{{list}}" wx:key="{{index}}">
+        <view bindtap="payment" class="page-item-bd" data-wpypayment-a="{{item.id}}" data-wpypayment-b="{{item.pay_name}}" data-wpypayment-c="{{item.amount}}">
+          <text class="icon icon-{{item.pay_item}}"/>
+          <view class="desc" style="color:{{btncolor}}">{{item.createTime.month+1}}月{{item.pay_name}}</view>
+          <view class="text">点击支付</view>
+        </view>
+        <view class="page-item-ft">
+          <text class="unit">RMB</text>
+          <text wx:if="{{!!item.amount}}" class="amount">{{item.price}}</text>
+          <input wx:if="{{!item.amount}}" class="input" placeholder-class="input__placeholder" type="text" placeholder="点击输入"/>
+        </view>
+      </view>
+      </view>
+    </view>

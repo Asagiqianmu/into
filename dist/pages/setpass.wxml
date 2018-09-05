@@ -1,0 +1,19 @@
+
+    <view class="page">
+        <view class="page-before" style="background-color:{{btncolor}}"/>
+        <view class="page-view">
+
+
+            <view class="cue-title" style="color:{{btncolor}}">密码限定6—18位字母、数字。
+            </view>
+            <input class="new-pass" placeholder="新密码" bindinput="setnewpass" maxlength="18"/>
+            <input class="surenew-pass" placeholder="确认新密码" bindinput="surenewpass" maxlength="18"/>
+
+            <view class="pass-warning">{{warning}}</view>
+            <button bindtap="setpass" class="page-btn" style="background-color:{{btncolor}}">确定</button>
+        </view>
+
+        <modal hidden="{{hidden}}" title="修改成功" confirm-text="确定" no-cancel="{{nocancel}}" bindconfirm="confirm">
+            <view class="menuspan">密码修改成功!点击确定跳转至登陆页面.</view>
+        </modal>
+    </view>

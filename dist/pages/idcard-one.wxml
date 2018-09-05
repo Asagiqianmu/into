@@ -1,0 +1,30 @@
+
+    <vive class="page">
+        <view class="page-before" style="background-color:{{btncolor}}"/>
+        <view class="page-panel">
+            <view class="page-panel-bd">
+                <view style="color:{{btncolor}}" class="head">用户认证</view>
+                <view class="menu2">
+                    <view class="menu2-tip1">
+                        A:检测到您的小区暂无智能家居,请联系管理员.
+                    </view>
+                    <view class="menu2-tip2">
+                        B:检测到您已安装了智能家居设备.
+                    </view>
+                    <view class="menu2-shi">实名认证.</view>
+                    <view class="menu2-pr">
+                        <view class="menu2-pr-sfz1">
+                            <image bindtap="previewImage1" class="menu2-pr-sfz1-img1" src="{{tempFilePaths1}}"/>
+                            <button class="menu2-pr-sfz1-bt1" bindtap="up1img" style="background-color:{{btncolor}}">正面照片</button>
+                        </view>
+                        <view class="menu2-pr-sfz2">
+                            <image bindtap="previewImage2" class="menu2-pr-sfz2-img2" src="{{tempFilePaths2}}"/>
+                            <button class="menu2-pr-sfz2-bt2" bindtap="up2img" style="background-color:{{btncolor}}">反面照片</button>
+                        </view>
+                    </view>
+                    <view class="menu2-err">{{warning}}</view>
+                    <button bindtap="next" style="background-color:{{btncolor}}" class="menu2-bt">下一步</button>
+                </view>
+            </view>
+        </view>
+    </vive>
